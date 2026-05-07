@@ -327,16 +327,16 @@ function initializeCreatorPage() {
         // Generate QR code for creator page
         setTimeout(() => {
             const qrContainer = document.getElementById('qrcode');
-            if (qrContainer) {
+            if (qrContainer && typeof QRCode !== 'undefined') {
                 qrContainer.innerHTML = '';
                 new QRCode(qrContainer, {
                     text: `${window.location.origin}/${creator.username}`,
                     width: 200,
                     height: 200,
-                    colorDark: '#000000',
-                    colorLight: '#ffffff',
-                    correctLevel: QRCode.CorrectLevel.H
                 });
+            } else if (qrContainer) {
+                // Fallback if QR library not loaded
+                qrContainer.innerHTML = '<p>QR code temporarily unavailable</p>';
             }
         }, 100);
         
