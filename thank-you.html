@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You! 🥤</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="thank-you-card">
+            <div class="thank-you-icon">🥤</div>
+            <h1 class="thank-you-title">Thank you for buying <span id="creatorName"></span> a soda!</h1>
+            <p class="thank-you-message">Your support means a lot. You're awesome! 🎉</p>
+            
+            <div class="thank-you-actions">
+                <button onclick="window.close()" class="cta-button">Close Window</button>
+                <a href="index.html" class="cta-button secondary">Create Your Page</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get creator name from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const creatorName = urlParams.get('creator') || 'this creator';
+        document.getElementById('creatorName').textContent = creatorName;
+    </script>
+</body>
+</html>

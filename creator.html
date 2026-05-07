@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Buy Me a Soda 🥤</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="creator-card">
+            <!-- Profile Section -->
+            <div class="profile-section">
+                <div class="profile-header">
+                    <img id="profileImage" src="https://via.placeholder.com/100" alt="Profile" class="profile-image">
+                    <div class="profile-info">
+                        <h1 id="creatorName" class="creator-name">Loading...</h1>
+                        <p id="creatorBio" class="creator-bio">Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QR Code Section -->
+            <div class="qr-section">
+                <div class="qr-code-container">
+                    <div id="qrcode"></div>
+                </div>
+                <p class="qr-text">Scan to support!</p>
+            </div>
+
+            <!-- Support Buttons -->
+            <div class="support-section">
+                <h2 class="support-title">Buy Me Sodas 🥤</h2>
+                <div class="soda-buttons">
+                    <button class="soda-btn" data-sodas="1">
+                        🥤 Buy 1 Soda - $1
+                    </button>
+                    <button class="soda-btn" data-sodas="3">
+                        🥤 Buy 3 Sodas - $3
+                    </button>
+                    <button class="soda-btn" data-sodas="5">
+                        🥤 Buy 5 Sodas - $5
+                    </button>
+                </div>
+            </div>
+
+            <!-- Share Section -->
+            <div class="share-section">
+                <h3>Share this page:</h3>
+                <div class="share-buttons">
+                    <button id="copyLinkBtn" class="share-btn">📋 Copy Link</button>
+                    <button id="shareQRBtn" class="share-btn">📱 Share QR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

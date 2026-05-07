@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your QR Code - Buy Me a Soda 🥤</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <div class="main-container">
+        <div class="qr-container">
+            <h1 class="qr-title">Your QR Code 🥤</h1>
+            
+            <p class="qr-description">Share this QR code to receive soda donations!</p>
+            <span id="paypalMe" class="paypal-link"></span>
+            
+            <div class="qr-code-wrapper">
+                <div class="qr-code-container">
+                    <div id="qrcode"></div>
+                </div>
+            </div>
+            
+            <button id="downloadBtn" class="download-button">Download QR Code</button>
+            <button onclick="window.location.href='index.html'" class="back-button">Back to Home</button>
+            
+            <div class="instructions">
+                <h3>How to use:</h3>
+                <ul>
+                    <li>• People can scan this QR code with their phone</li>
+                    <li>• It will open your PayPal.Me link directly</li>
+                    <li>• They can send you money for a soda! 🥤</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

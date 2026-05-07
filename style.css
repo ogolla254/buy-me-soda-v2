@@ -1,0 +1,511 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(to right, #3b82f6, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.main-container {
+    width: 100%;
+    max-width: 500px;
+}
+
+.content-card {
+    text-align: center;
+    color: white;
+    padding: 40px 20px;
+}
+
+.title {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 24px;
+    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.subtitle {
+    font-size: 18px;
+    margin-bottom: 32px;
+    opacity: 0.9;
+}
+
+.cta-button {
+    display: inline-block;
+    background: white;
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 12px 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.cta-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.button-group {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.logout-button {
+    background: #ef4444;
+    color: white;
+    border: none;
+    font-weight: 600;
+    padding: 12px 24px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.logout-button:hover {
+    background: #dc2626;
+}
+
+/* Form styles */
+.form-container {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-title {
+    color: #1f2937;
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.form-label {
+    display: block;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.submit-button {
+    width: 100%;
+    background: #2563eb;
+    color: white;
+    border: none;
+    font-weight: 600;
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 16px;
+}
+
+.submit-button:hover {
+    background: #1d4ed8;
+}
+
+.auth-links {
+    text-align: center;
+    margin-top: 24px;
+    color: #6b7280;
+}
+
+.auth-links a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-links a:hover {
+    text-decoration: underline;
+}
+
+/* QR Code styles */
+.qr-container {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.qr-title {
+    color: #1f2937;
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 24px;
+}
+
+.qr-description {
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.paypal-link {
+    color: #2563eb;
+    font-weight: 500;
+    margin-bottom: 24px;
+    display: block;
+}
+
+.qr-code-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.qr-code-container {
+    border: 4px solid #3b82f6;
+    border-radius: 12px;
+    padding: 8px;
+    background: white;
+}
+
+.download-button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    font-weight: 600;
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.download-button:hover {
+    background: #1d4ed8;
+}
+
+.back-button {
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    font-weight: 600;
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 100%;
+}
+
+.back-button:hover {
+    background: #e5e7eb;
+}
+
+.instructions {
+    background: #eff6ff;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 24px;
+    text-align: left;
+}
+
+.instructions h3 {
+    color: #1e40af;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.instructions ul {
+    color: #1e40af;
+    font-size: 14px;
+    list-style: none;
+    padding-left: 0;
+}
+
+.instructions li {
+    margin-bottom: 4px;
+}
+
+/* Form hints */
+.form-hint {
+    display: block;
+    color: #6b7280;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* Creator page styles */
+.creator-card {
+    background: white;
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+}
+
+.profile-section {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.profile-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #3b82f6;
+}
+
+.creator-name {
+    color: #1f2937;
+    font-size: 28px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.creator-bio {
+    color: #6b7280;
+    font-size: 16px;
+    margin: 8px 0 0 0;
+    line-height: 1.5;
+}
+
+.qr-section {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.qr-code-container {
+    display: inline-block;
+    border: 4px solid #3b82f6;
+    border-radius: 12px;
+    padding: 8px;
+    background: white;
+    margin-bottom: 12px;
+}
+
+.qr-text {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.support-section {
+    margin-bottom: 32px;
+}
+
+.support-title {
+    color: #1f2937;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.soda-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.soda-btn {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: white;
+    border: none;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 16px 24px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-align: left;
+}
+
+.soda-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+}
+
+.share-section {
+    text-align: center;
+}
+
+.share-section h3 {
+    color: #6b7280;
+    font-size: 16px;
+    margin-bottom: 12px;
+}
+
+.share-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.share-btn {
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.share-btn:hover {
+    background: #e5e7eb;
+}
+
+/* Thank you page styles */
+.thank-you-card {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+.thank-you-icon {
+    font-size: 64px;
+    margin-bottom: 24px;
+}
+
+.thank-you-title {
+    color: #1f2937;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 16px;
+}
+
+.thank-you-message {
+    color: #6b7280;
+    font-size: 16px;
+    margin-bottom: 32px;
+}
+
+.thank-you-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Feature section */
+.feature-section {
+    margin-top: 32px;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.feature-title {
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.feature-description {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+}
+
+/* Secondary button */
+.cta-button.secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.cta-button.secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .title {
+        font-size: 36px;
+    }
+    
+    .subtitle {
+        font-size: 16px;
+    }
+    
+    .button-group {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .cta-button, .logout-button {
+        width: 100%;
+        max-width: 200px;
+    }
+    
+    .creator-card {
+        padding: 24px;
+        margin: 16px;
+    }
+    
+    .profile-header {
+        gap: 12px;
+    }
+    
+    .profile-image {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .creator-name {
+        font-size: 24px;
+    }
+    
+    .share-buttons {
+        flex-direction: column;
+    }
+    
+    .thank-you-card {
+        padding: 32px 24px;
+    }
+}
