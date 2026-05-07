@@ -20,9 +20,16 @@ class UserSession {
 
 // API functions
 class API {
+    static getBaseUrl() {
+        const isProduction = window.location.hostname !== 'localhost';
+        return isProduction 
+            ? 'https://buy-me-soda-v2-production.up.railway.app'
+            : 'http://localhost:3001';
+    }
+
     static async register(userData) {
         try {
-            const response = await fetch('http://localhost:3001/api/register', {
+            const response = await fetch(`${API.getBaseUrl()}/api/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -37,13 +44,13 @@ class API {
             }
         } catch (error) {
             console.error('Registration error:', error);
-            throw error;
+            throw new Error('Registration failed');
         }
     }
 
     static async login(credentials) {
         try {
-            const response = await fetch('http://localhost:3001/api/login', {
+            const response = await fetch(`${API.getBaseUrl()}/api/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -64,7 +71,12 @@ class API {
 
     static async getCreator(username) {
         try {
-            const response = await fetch(`http://localhost:3001/api/creator/${username}`);
+            const response = await fetch(`${API.getBaseUrl()}/api/creator/${username}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
             
             if (response.ok) {
                 return await response.json();
@@ -85,7 +97,8 @@ function validateEmail(email) {
 }
 
 function validatePaypalMe(url) {
-    return url.includes('paypal.me/');
+    // Must start with https://paypal.me/
+    return url.startsWith('https://paypal.me/');
 }
 
 // Show message
@@ -290,8 +303,16 @@ function initializeCreatorPage() {
         return;
     }
     
+    // Use dynamic API URL for both local and production
+    const isProduction = window.location.hostname !== 'localhost';
+    const apiBaseUrl = isProduction 
+        ? 'https://buy-me-soda-v2-production.up.railway.app'
+        : 'http://localhost:3001';
+    
     // Fetch creator data
-    API.getCreator(username).then(creator => {
+    fetch(`${API.getBaseUrl()}/api/creator/${username}`)
+        .then(response => response.json())
+        .then(creator => {
         // Update page content
         document.title = `${creator.name || creator.username} - Buy Me a Soda 🥤`;
         document.getElementById('creatorName').textContent = creator.name || creator.username;
