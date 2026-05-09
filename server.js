@@ -20,28 +20,9 @@ try {
 // Initialize database
 async function initializeDatabase() {
     try {
-        // Ensure data directory exists
-        const fs = require('fs');
-        const path = require('path');
-        const dataDir = '/app/data';
-        
-        if (!fs.existsSync(dataDir)) {
-            fs.mkdirSync(dataDir, { recursive: true });
-            console.log('Created data directory');
-        }
-        
         // Test database connection
         await prisma.$connect();
         console.log('Database connected successfully');
-        
-        // Create tables if they don't exist
-        const { execSync } = require('child_process');
-        try {
-            execSync('npx prisma db push', { stdio: 'inherit' });
-            console.log('Database tables created/verified');
-        } catch (pushError) {
-            console.log('Prisma push error:', pushError.message);
-        }
         
         // Check if we can perform a simple query
         await prisma.user.count();
@@ -84,6 +65,9 @@ app.get('/api/db-test', async (req, res) => {
 app.post('/api/register', async (req, res) => {
     try {
         console.log('Registration request received');
+        console.log('Request headers:', req.headers);
+        console.log('Request body raw:', req.body);
+        console.log('Request body parsed:', JSON.stringify(req.body));
         
         const { name, email, username, password, paypalMe, profilePicture, bio } = req.body;
         
@@ -98,18 +82,23 @@ app.post('/api/register', async (req, res) => {
         console.log('Checking if user exists...');
         
         // Check if user already exists
-        const existingUser = await prisma.user.findFirst({
-            where: {
-                OR: [
-                    { email },
-                    { username }
-                ]
+        try {
+            const existingUser = await prisma.user.findFirst({
+                where: {
+                    OR: [
+                        { email },
+                        { username }
+                    ]
+                }
+            });
+            
+            if (existingUser) {
+                console.log('User already exists:', existingUser);
+                return res.status(400).json({ error: 'User already exists' });
             }
-        });
-        
-        if (existingUser) {
-            console.log('User already exists');
-            return res.status(400).json({ error: 'User already exists' });
+        } catch (dbError) {
+            console.error('Database query error:', dbError);
+            return res.status(500).json({ error: 'Database error checking user', details: dbError.message });
         }
         
         console.log('Hashing password...');
