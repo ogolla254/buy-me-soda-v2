@@ -151,9 +151,9 @@ body.dark-mode .btn-secondary {
 }
 
 .nav-logo h2 {
-    font-family: 'Bebas Neue', cursive;
+    font-family: 'Lobster', cursive;
     font-size: 1.8rem;
-    font-weight: 400;
+    font-weight: 700;
     color: white;
     background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 50%, #ffa500 100%);
     -webkit-background-clip: text;
@@ -366,9 +366,9 @@ body.dark-mode .btn-secondary {
 }
 
 .hero-main-logo {
-    font-family: 'Bebas Neue', cursive;
+    font-family: 'Lobster', cursive;
     font-size: 5.5rem;
-    font-weight: 400;
+    font-weight: 700;
     background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 50%, #ffa500 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -1524,16 +1524,33 @@ body.dark-mode .btn-secondary {
 /* Responsive */
 @media (max-width: 768px) {
     .nav-container {
-        gap: 15px;
-        padding: 10px 15px;
+        gap: 10px;
+        padding: 8px 12px;
         flex-wrap: nowrap;
         justify-content: space-between;
     }
     
     .nav-links {
-        gap: 15px;
+        gap: 8px;
         flex-wrap: nowrap;
         justify-content: space-between;
+    }
+    
+    .nav-logo h2 {
+        font-size: 1.2rem;
+    }
+    
+    .nav-links .btn {
+        padding: 6px 10px;
+        font-size: 0.7rem;
+        white-space: nowrap;
+    }
+    
+    .dark-mode-toggle {
+        width: 28px;
+        height: 28px;
+        font-size: 0.9rem;
+        flex-shrink: 0;
     }
     
     .hero {
@@ -1586,6 +1603,33 @@ body.dark-mode .btn-secondary {
 }
 
 @media (max-width: 480px) {
+    .nav-container {
+        gap: 8px;
+        padding: 6px 10px;
+    }
+    
+    .nav-logo h2 {
+        font-size: 1rem;
+    }
+    
+    .nav-links .btn {
+        padding: 5px 8px;
+        font-size: 0.65rem;
+    }
+    
+    .dark-mode-toggle {
+        width: 24px;
+        height: 24px;
+        font-size: 0.8rem;
+    }
+    
+    .btn-large {
+        width: 100%;
+        max-width: 250px;
+        padding: 10px 20px;
+        font-size: 0.85rem;
+    }
+    
     .hero {
         padding: 80px 15px 60px;
     }
