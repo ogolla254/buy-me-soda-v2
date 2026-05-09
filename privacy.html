@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Buy Me a Soda</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Modern Fintech Styles */
+        body {
+            background-color: #0f172a;
+            font-family: 'Inter', sans-serif;
+            color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            animation: fadeIn 0.8s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .content-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        
+        .page-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #38bdf8;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #38bdf8, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .terms-header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .terms-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #38bdf8;
+            margin-bottom: 15px;
+        }
+        
+        .terms-intro {
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        
+        .terms-section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.3s ease;
+        }
+        
+        .terms-section:hover {
+            background: rgba(255, 255, 255, 0.04);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .terms-section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #38bdf8;
+            margin-bottom: 20px;
+        }
+        
+        .terms-point {
+            color: #f8fafc;
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border-left: 4px solid #22c55e;
+            transition: all 0.3s ease;
+        }
+        
+        .terms-point:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(10px);
+        }
+        
+        .terms-point strong {
+            color: #22c55e;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .back-to-home {
+            position: sticky;
+            bottom: 30px;
+            text-align: center;
+            margin-top: 50px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #22c55e, #38bdf8);
+            color: #0f172a;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+        }
+        
+        .footer {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px 20px;
+            margin-top: 80px;
+        }
+        
+        .footer-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .footer-logo h3 {
+            color: #38bdf8;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .footer-logo p {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .footer-links-title {
+            color: #38bdf8;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #22c55e;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: #38bdf8;
+            transform: translateX(5px);
+        }
+        
+        .footer-bottom {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .content-card {
+                padding: 30px 20px;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .terms-header h2 {
+                font-size: 1.8rem;
+            }
+            
+            .terms-section {
+                padding: 20px;
+            }
+            
+            .terms-point {
+                padding: 15px;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html" class="nav-logo-link">
+                    <h2>Buy Me a Soda 🥤</h2>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="dark-mode-toggle"><span class="icon">🌙</span></a>
+                <a href="login.html" class="btn btn-login">Login</a>
+                <a href="signup.html" class="btn btn-signup">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="content-card">
+            <h1 class="page-title">Privacy Policy</h1>
+            
+            <div class="terms-content">
+                <div class="terms-header">
+                    <h2>Privacy Policy</h2>
+                    <p class="terms-intro">Last Updated: May 9, 2026</p>
+                    <p class="terms-intro">Welcome to Buy Me a Soda. Your privacy is important to us. This Privacy Policy explains how we collect, use, store, and protect your information when you use our platform.</p>
+                </div>
+                
+                <div class="terms-section">
+                    <h3>1. Information We Collect</h3>
+                    <div class="terms-point">
+                        <strong>Personal Information</strong>
+                        Full name, username, email address, profile picture, creator bio, social media links, QR code links, public support page information
+                    </div>
+                    <div class="terms-point">
+                        <strong>Transaction Information</strong>
+                        Payment amount, payment method, transaction date and time, supporter messages, technical information, IP address, device information
+                    </div>
+                    <div class="terms-point">
+                        <strong>Analytics Data</strong>
+                        Cookies and analytics data for platform usage
+                    </div>
+                </div>
+                
+                <div class="terms-section">
+                    <h3>2. How We Use Your Information</h3>
+                    <div class="terms-point">
+                        We use your information to create and maintain user accounts, process payments and donations, generate QR codes and creator pages, improve platform security, prevent fraud and abuse, provide customer support, and send important service updates.
+                    </div>
+                </div>
+                
+                <div class="terms-section">
+                    <h3>3. Payment Processing</h3>
+                    <div class="terms-point">
+                        Buy Me a Soda does not directly store sensitive card information. Payments may be processed through trusted third-party payment providers such as PayPal, Stripe, GCash, or M-Pesa. These providers handle payment security according to their own privacy and security policies.
+                    </div>
+                </div>
+                
+                <div class="terms-section">
+                    <h3>4. Public Information</h3>
+                    <div class="terms-point">
+                        Some creator information is publicly visible, including username, profile photo, creator bio, QR code page, and public supporter messages (if enabled). Users should avoid posting sensitive personal information publicly.
+                    </div>
+                </div>
+                
+                <div class="terms-section">
+                    <h3>5. Cookies and Analytics</h3>
+                    <div class="terms-point">
+                        We may use cookies and similar technologies to remember user preferences and login status, analyze website usage and improve our services, detect suspicious activity, and provide personalized content and advertisements.
+                    </div>
+                    <div class="terms-point">
+                        Users can disable cookies in their browser settings, though some features may not function properly.
+                    </div>
+                </div>
+                
+                <div class="terms-section">
+                    <h3>6. Data Security</h3>
+                    <div class="terms-point">
+                        We take reasonable measures to protect your data, including secure servers, encrypted connections (HTTPS), access restrictions, and payment provider security protections. However, no online service can guarantee absolute security.
+                    </div>
+                    <div class="terms-point">
+                        We regularly update our security systems and limit employee access to your data.
+                    </div>
+                </div>
+                
+                <div class="terms-section">
+                    <h3>7. User Rights</h3>
+                    <div class="terms-point">
+                        You have the right to access and update your personal information, request account deletion and data removal, contact support regarding privacy concerns, and opt out of marketing communications.
+                    </div>
+                </div>
+                
+                <div class="terms-section">
+                    <h3>8. Children's Privacy</h3>
+                    <div class="terms-point">
+                        Buy Me a Soda is not intended for children under age 13. We do not knowingly collect personal information from children.
+                    </div>
+                </div>
+                
+                <div class="terms-section">
+                    <h3>9. Third-Party Links</h3>
+                    <div class="terms-point">
+                        Our platform may contain links to third-party websites or social media platforms. We are not responsible for their privacy practices.
+                    </div>
+                </div>
+                
+                <div class="terms-section">
+                    <h3>10. Changes to This Policy</h3>
+                    <div class="terms-point">
+                        We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated revision date. Continued use of Buy Me a Soda after changes are posted means you accept of updated policies.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="back-to-home">
+                <a href="index.html" class="btn btn-secondary">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>Buy Me a Soda 🥤</h3>
+                    <p>Simple creator support platform</p>
+                </div>
+                <div class="footer-links">
+                    <h4 class="footer-links-title">Links</h4>
+                    <a href="#how-it-works">How It Works</a>
+                    <a href="terms.html">Terms of Service</a>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="contact.html">Contact Us</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Buy Me a Soda. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dark mode toggle functionality
+        const darkModeToggle = document.querySelector('.dark-mode-toggle');
+        const body = document.body;
+        
+        // Check for saved dark mode preference
+        const savedDarkMode = localStorage.getItem('darkMode');
+        if (savedDarkMode === 'enabled') {
+            body.classList.add('dark-mode');
+            darkModeToggle.innerHTML = '<span class="icon">☀️</span>';
+        }
+        
+        darkModeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isDarkMode = body.classList.contains('dark-mode');
+            
+            if (isDarkMode) {
+                darkModeToggle.innerHTML = '<span class="icon">☀️</span>';
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                darkModeToggle.innerHTML = '<span class="icon">🌙</span>';
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        });
+    </script>
+</body>
+</html>

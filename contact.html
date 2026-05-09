@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Buy Me a Soda</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Modern Fintech Styles */
+        body {
+            background-color: #0f172a;
+            font-family: 'Inter', sans-serif;
+            color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            animation: fadeIn 0.8s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .content-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        
+        .page-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #38bdf8;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #38bdf8, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .contact-header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .contact-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #38bdf8;
+            margin-bottom: 15px;
+        }
+        
+        .contact-intro {
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .contact-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .contact-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .contact-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #38bdf8, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .contact-item h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #38bdf8;
+            margin-bottom: 15px;
+        }
+        
+        .contact-item p {
+            color: #f8fafc;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        
+        .contact-item a {
+            color: #22c55e;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-item a:hover {
+            color: #38bdf8;
+            transform: translateX(5px);
+        }
+        
+        .contact-form {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #38bdf8;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #f8fafc;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #38bdf8;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #ff6b35, #ff8c42);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+        
+        .back-to-home {
+            position: sticky;
+            bottom: 30px;
+            text-align: center;
+            margin-top: 50px;
+        }
+        
+        .footer {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px 20px;
+            margin-top: 80px;
+        }
+        
+        .footer-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .footer-logo h3 {
+            color: #38bdf8;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .footer-logo p {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .footer-links-title {
+            color: #38bdf8;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #22c55e;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: #38bdf8;
+            transform: translateX(5px);
+        }
+        
+        .contact-info {
+            margin-top: 50px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+        }
+        
+        .contact-info h3 {
+            color: #38bdf8;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .contact-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .contact-method {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-method:hover {
+            background: rgba(255, 255, 255, 0.04);
+            transform: translateY(-2px);
+        }
+        
+        .contact-method-icon {
+            font-size: 2rem;
+            margin-right: 20px;
+        }
+        
+        .contact-method-details h4 {
+            color: #38bdf8;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .contact-method-details a {
+            color: #22c55e;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-method-details a:hover {
+            color: #38bdf8;
+            transform: translateX(5px);
+        }
+        
+        .success-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .popup-content {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            animation: popupFadeIn 0.3s ease;
+        }
+        
+        @keyframes popupFadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .popup-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .popup-content h3 {
+            color: #38bdf8;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .popup-content p {
+            color: #cbd5e1;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+        
+        .popup-close {
+            background: linear-gradient(135deg, #ff6b35, #ff8c42);
+            color: #ffffff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .popup-close:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+        
+        .footer-bottom {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .content-card {
+                padding: 30px 20px;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .contact-header h2 {
+                font-size: 1.8rem;
+            }
+            
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-form {
+                padding: 30px 20px;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html" class="nav-logo-link">
+                    <h2>Buy Me a Soda 🥤</h2>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="dark-mode-toggle"><span class="icon">🌙</span></a>
+                <a href="login.html" class="btn btn-login">Login</a>
+                <a href="signup.html" class="btn btn-signup">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="content-card">
+            <h1 class="page-title">Contact Us</h1>
+            
+            <div class="contact-header">
+                <h2>Contact Us</h2>
+                <p class="contact-intro">Have questions or need help? Reach out to us anytime.</p>
+            </div>
+            
+            <div class="contact-form">
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">Send Message</button>
+                </form>
+            </div>
+            
+            <div class="contact-info">
+                <h3>Other Ways to Reach Us</h3>
+                <div class="contact-methods">
+                    <div class="contact-method">
+                        <div class="contact-method-icon">�</div>
+                        <div class="contact-method-details">
+                            <h4>Email Support</h4>
+                            <a href="mailto:support@buymesoda.com">support@buymesoda.com</a>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-method">
+                        <div class="contact-method-icon">💬</div>
+                        <div class="contact-method-details">
+                            <h4>WhatsApp Support</h4>
+                            <a href="https://wa.me/1234567890">+1 (234) 567-890</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Success Popup -->
+            <div id="successPopup" class="success-popup">
+                <div class="popup-content">
+                    <div class="popup-icon">✅</div>
+                    <h3>Message Sent Successfully!</h3>
+                    <p>Thank you for reaching out. We'll get back to you within 24 hours.</p>
+                    <button class="popup-close" onclick="closePopup()">Close</button>
+                </div>
+            </div>
+            
+            <div class="back-to-home">
+                <a href="index.html" class="btn">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>Buy Me a Soda 🥤</h3>
+                    <p>Simple creator support platform</p>
+                </div>
+                <div class="footer-links">
+                    <h4 class="footer-links-title">Links</h4>
+                    <a href="#how-it-works">How It Works</a>
+                    <a href="terms.html">Terms of Service</a>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="contact.html">Contact Us</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Buy Me a Soda. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dark mode toggle functionality
+        const darkModeToggle = document.querySelector('.dark-mode-toggle');
+        const body = document.body;
+        
+        // Check for saved dark mode preference
+        const savedDarkMode = localStorage.getItem('darkMode');
+        if (savedDarkMode === 'enabled') {
+            body.classList.add('dark-mode');
+            darkModeToggle.innerHTML = '<span class="icon">☀️</span>';
+        }
+        
+        darkModeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isDarkMode = body.classList.contains('dark-mode');
+            
+            if (isDarkMode) {
+                darkModeToggle.innerHTML = '<span class="icon">☀️</span>';
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                darkModeToggle.innerHTML = '<span class="icon">🌙</span>';
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        });
+        
+        // Form validation and submission
+        const contactForm = document.getElementById('contactForm');
+        const successPopup = document.getElementById('successPopup');
+        
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const subject = document.getElementById('subject').value.trim();
+            const message = document.getElementById('message').value.trim();
+            
+            // Validation
+            let isValid = true;
+            let errorMessage = '';
+            
+            if (name.length < 2) {
+                errorMessage = 'Please enter your full name (at least 2 characters)';
+                isValid = false;
+            } else if (!isValidEmail(email)) {
+                errorMessage = 'Please enter a valid email address';
+                isValid = false;
+            } else if (subject.length < 5) {
+                errorMessage = 'Please enter a subject (at least 5 characters)';
+                isValid = false;
+            } else if (message.length < 10) {
+                errorMessage = 'Please enter a message (at least 10 characters)';
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                alert(errorMessage);
+                return;
+            }
+            
+            // Show success popup
+            showSuccessPopup();
+            
+            // Reset form
+            contactForm.reset();
+        });
+        
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        function showSuccessPopup() {
+            successPopup.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closePopup() {
+            successPopup.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close popup when clicking outside
+        successPopup.addEventListener('click', function(e) {
+            if (e.target === successPopup) {
+                closePopup();
+            }
+        });
+    </script>
+</body>
+</html>
