@@ -18,10 +18,12 @@ class API {
   static register(formData) { return API.request('/api/register', { method: 'POST', body: formData }); }
   static login(credentials) { return API.request('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(credentials) }); }
   static logout() { return API.request('/api/logout', { method: 'POST' }); }
-  static me() { return API.request('/api/me'); }
   static getCreator(username) { return API.request(`/api/creator/${encodeURIComponent(username)}`); }
   static getCreatorDashboard() { return API.request('/api/creator-dashboard'); }
   static createSupport(data) { return API.request('/api/support', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); }
+  static requestPasswordReset(email) { return API.request('/api/password-reset/request', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) }); }
+  static completePasswordReset(data) { return API.request('/api/password-reset/complete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); }
+  static contact(data) { return API.request('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); }
   static trackEvent(type, extra = {}) { return API.request('/api/analytics/event', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type, path: window.location.pathname, ...extra }) }).catch(() => null); }
 }
 
@@ -32,6 +34,14 @@ function showMessage(message, type = 'info') {
   const div = document.createElement('div'); div.textContent = message;
   div.style.cssText = `position:fixed;top:20px;right:20px;padding:12px 20px;border-radius:8px;color:white;font-weight:600;z-index:9999;max-width:340px;background:${type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : '#3b82f6'};box-shadow:0 8px 24px rgba(0,0,0,.18)`;
   document.body.appendChild(div); setTimeout(() => div.remove(), 3500);
+}
+
+async function showForgotPassword() {
+  const email = window.prompt('Enter your BuyMeSoda account email:');
+  if (!email) return;
+  if (!validateEmail(email)) return showMessage('Please enter a valid email', 'error');
+  try { await API.requestPasswordReset(email); showMessage('If that email exists, a reset code has been sent.', 'success'); setTimeout(() => { window.location.href = `reset-password.html?email=${encodeURIComponent(email)}`; }, 900); }
+  catch (error) { showMessage(error.message || 'Could not request password reset', 'error'); }
 }
 
 function initializeMainPage() {
@@ -50,9 +60,9 @@ function initializeSignupPage() {
     if (name.length < 2) return showMessage('Please enter your name', 'error');
     if (!validateEmail(email)) return showMessage('Please enter a valid email', 'error');
     if (username.length < 3) return showMessage('Username must be at least 3 characters', 'error');
-    if (password.length < 6) return showMessage('Password must be at least 6 characters', 'error');
+    if (password.length < 8) return showMessage('Password must be at least 8 characters', 'error');
     if (!validatePaypalMe(paypalMe)) return showMessage('Please enter a valid PayPal.Me link', 'error');
-    try { const user = await API.register(data); UserSession.setUser(user); showMessage('Account created successfully!', 'success'); setTimeout(() => { window.location.href = 'login.html'; }, 1000); }
+    try { const user = await API.register(data); UserSession.setUser(user); showMessage('Account created successfully!', 'success'); setTimeout(() => { window.location.href = 'creator-dashboard.html'; }, 1000); }
     catch (error) { showMessage(error.message || 'Error creating account', 'error'); }
   });
 }
@@ -65,6 +75,41 @@ function initializeLoginPage() {
     if (!password) return showMessage('Please enter your password', 'error');
     try { const user = await API.login({ email, password }); UserSession.setUser(user); showMessage(`Welcome back, ${user.name || user.username}!`, 'success'); setTimeout(() => { window.location.href = 'creator-dashboard.html'; }, 800); }
     catch (error) { showMessage(error.message || 'Invalid email or password', 'error'); }
+  });
+}
+
+function initializeForgotPasswordPage() {
+  const form = document.getElementById('forgotForm'); if (!form) return;
+  form.addEventListener('submit', async event => {
+    event.preventDefault(); const email = String(document.getElementById('resetEmail')?.value || '').trim();
+    if (!validateEmail(email)) return showMessage('Please enter a valid email', 'error');
+    try { await API.requestPasswordReset(email); showMessage('If that email exists, a reset code has been sent.', 'success'); setTimeout(() => { window.location.href = `reset-password.html?email=${encodeURIComponent(email)}`; }, 900); }
+    catch (error) { showMessage(error.message || 'Could not request reset', 'error'); }
+  });
+}
+
+function initializeResetPasswordPage() {
+  const form = document.getElementById('resetForm'); if (!form) return;
+  const emailInput = document.getElementById('resetEmail'); const email = new URLSearchParams(window.location.search).get('email'); if (email && emailInput) emailInput.value = email;
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    const emailValue = String(emailInput?.value || '').trim(), code = String(document.getElementById('resetCode')?.value || '').trim(), password = String(document.getElementById('newPassword')?.value || ''), confirm = String(document.getElementById('confirmPassword')?.value || '');
+    if (!validateEmail(emailValue)) return showMessage('Please enter a valid email', 'error');
+    if (!/^\d{6}$/.test(code)) return showMessage('Enter the 6-digit reset code', 'error');
+    if (password.length < 8) return showMessage('Password must be at least 8 characters', 'error');
+    if (password !== confirm) return showMessage('Passwords do not match', 'error');
+    try { await API.completePasswordReset({ email: emailValue, code, newPassword: password }); showMessage('Password changed successfully!', 'success'); setTimeout(() => { window.location.href = 'login.html'; }, 1000); }
+    catch (error) { showMessage(error.message || 'Could not reset password', 'error'); }
+  });
+}
+
+function initializeContactPage() {
+  const form = document.getElementById('contactForm'); if (!form) return;
+  form.addEventListener('submit', async event => {
+    event.preventDefault(); const data = new FormData(form); const payload = { name: String(data.get('name') || '').trim(), email: String(data.get('email') || '').trim(), subject: String(data.get('subject') || '').trim(), message: String(data.get('message') || '').trim() };
+    if (!payload.name || !validateEmail(payload.email) || !payload.subject || !payload.message) return showMessage('Please complete all fields correctly', 'error');
+    try { await API.contact(payload); form.reset(); showMessage('Your message has been sent!', 'success'); }
+    catch (error) { showMessage(error.message || 'Could not send your message', 'error'); }
   });
 }
 
@@ -122,5 +167,14 @@ function initializeCreatorDashboard() {
 document.addEventListener('DOMContentLoaded', () => {
   const page = window.location.pathname.split('/').pop() || 'index.html';
   if (!page.includes('.') && page) return initializeCreatorPage();
-  switch (page) { case 'index.html': initializeMainPage(); break; case 'signup.html': initializeSignupPage(); break; case 'login.html': initializeLoginPage(); break; case 'qr.html': initializeQRPage(); break; case 'creator-dashboard.html': initializeCreatorDashboard(); break; }
+  switch (page) {
+    case 'index.html': initializeMainPage(); break;
+    case 'signup.html': initializeSignupPage(); break;
+    case 'login.html': initializeLoginPage(); break;
+    case 'forgot-password.html': initializeForgotPasswordPage(); break;
+    case 'reset-password.html': initializeResetPasswordPage(); break;
+    case 'contact.html': initializeContactPage(); break;
+    case 'qr.html': initializeQRPage(); break;
+    case 'creator-dashboard.html': initializeCreatorDashboard(); break;
+  }
 });
