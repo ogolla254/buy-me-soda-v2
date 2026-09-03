@@ -8,18 +8,20 @@ generator client {
 }
 
 model User {
-  id             String             @id @default(uuid())
-  name           String
-  email          String             @unique
-  username       String             @unique
-  password       String
-  paypalMe       String
-  profilePicture String             @default("")
-  bio            String             @default("")
-  createdAt      DateTime           @default(now())
-  isSuspended    Boolean            @default(false)
-  transactions   Transaction[]      @relation("CreatorTransactions")
-  messages       SupporterMessage[]
+  id               String             @id @default(uuid())
+  name             String
+  email            String             @unique
+  username         String             @unique
+  password         String
+  paypalMe         String
+  profilePicture   String             @default("")
+  bio              String             @default("")
+  createdAt        DateTime           @default(now())
+  isSuspended      Boolean            @default(false)
+  transactions     Transaction[]      @relation("CreatorTransactions")
+  messages         SupporterMessage[]
+  withdrawals      Withdrawal[]
+  passwordResets   PasswordResetCode[]
 }
 
 model Transaction {
@@ -52,6 +54,32 @@ model SupporterMessage {
   isRead         Boolean  @default(false)
   createdAt      DateTime @default(now())
   creator        User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+}
+
+model Withdrawal {
+  id                String   @id @default(uuid())
+  creatorId         String
+  amount            Float
+  currency          String   @default("USD")
+  method            String
+  destination      String
+  providerReference String?
+  status            String   @default("requested")
+  note              String?
+  processedAt       DateTime?
+  createdAt         DateTime @default(now())
+  creator           User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+}
+
+model PasswordResetCode {
+  id         String   @id @default(uuid())
+  userId     String
+  codeHash   String
+  expiresAt  DateTime
+  usedAt     DateTime?
+  attempts   Int      @default(0)
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Event {
