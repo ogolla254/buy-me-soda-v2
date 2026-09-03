@@ -8,34 +8,38 @@ generator client {
 }
 
 model User {
-  id             String        @id @default(uuid())
+  id             String             @id @default(uuid())
   name           String
-  email          String        @unique
-  username       String        @unique
+  email          String             @unique
+  username       String             @unique
   password       String
   paypalMe       String
-  profilePicture String        @default("")
-  bio            String        @default("")
-  createdAt      DateTime      @default(now())
-  isSuspended    Boolean       @default(false)
-  transactions   Transaction[] @relation("CreatorTransactions")
+  profilePicture String             @default("")
+  bio            String             @default("")
+  createdAt      DateTime           @default(now())
+  isSuspended    Boolean            @default(false)
+  transactions   Transaction[]      @relation("CreatorTransactions")
   messages       SupporterMessage[]
 }
 
 model Transaction {
-  id             String   @id @default(uuid())
-  creatorId      String
-  amount         Float
-  currency       String   @default("USD")
-  sodaCount      Int
-  supporterName  String?
-  supporterEmail String?
-  message        String?
-  provider       String   @default("manual")
-  status         String   @default("pending")
-  reference      String?  @unique
-  createdAt      DateTime @default(now())
-  creator        User     @relation("CreatorTransactions", fields: [creatorId], references: [id], onDelete: Cascade)
+  id                String   @id @default(uuid())
+  creatorId         String
+  amount            Float
+  currency          String   @default("USD")
+  sodaCount         Int
+  supporterName     String?
+  supporterEmail    String?
+  message           String?
+  provider          String   @default("manual")
+  providerReference String?
+  status            String   @default("pending")
+  feeAmount         Float    @default(0)
+  netAmount         Float?
+  reference         String?  @unique
+  createdAt         DateTime @default(now())
+  completedAt       DateTime?
+  creator           User     @relation("CreatorTransactions", fields: [creatorId], references: [id], onDelete: Cascade)
 }
 
 model SupporterMessage {
