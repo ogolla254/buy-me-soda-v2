@@ -1,12 +1,11 @@
 {
   "name": "buy-me-soda",
   "version": "1.0.0",
-  "description": "Buy Me a Soda - Simple QR payment system",
+  "description": "Buy Me a Soda - Creator support platform",
   "main": "server.js",
   "scripts": {
-    "start": "node server-simple.js",
-    "dev": "node server-simple.js",
-    "start-db": "node server.js",
+    "start": "node server.js",
+    "dev": "node server.js",
     "postinstall": "prisma generate"
   },
   "dependencies": {
@@ -14,6 +13,9 @@
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "express-session": "^1.18.2",
+    "multer": "^2.0.0",
+    "nodemailer": "^7.0.6",
     "prisma": "^5.22.0",
     "pg": "^8.11.0"
   },
