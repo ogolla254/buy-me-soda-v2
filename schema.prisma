@@ -34,11 +34,11 @@ model Transaction {
   provider          String   @default("manual")
   providerReference String?
   status            String   @default("pending")
-  feeAmount         Float    @default(0)
-  netAmount         Float?
   reference         String?  @unique
-  createdAt         DateTime @default(now())
+  feeAmount         Float    @default(0)
+  netAmount         Float    @default(0)
   completedAt       DateTime?
+  createdAt         DateTime @default(now())
   creator           User     @relation("CreatorTransactions", fields: [creatorId], references: [id], onDelete: Cascade)
 }
 
