@@ -65,6 +65,18 @@ function requireAdmin(req, res, next) {
   next();
 }
 
+function sanitizeUser(user) {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    username: user.username,
+    paypalMe: user.paypalMe,
+    bio: user.bio,
+    profilePicture: user.profilePicture
+  };
+}
+
 app.get('/api/test', (_req, res) => res.json({ message: 'Server is working!' }));
 
 app.post('/api/register', upload.single('profilePicture'), async (req, res) => {
@@ -85,7 +97,7 @@ app.post('/api/register', upload.single('profilePicture'), async (req, res) => {
       data: { name: name.trim(), email: normalizedEmail, username: normalizedUsername, password: hashedPassword, paypalMe: paypalMe.trim(), bio: bio.trim(), profilePicture }
     });
     await trackEvent('signup', req, { username: user.username });
-    res.status(201).json({ id: user.id, name: user.name, email: user.email, username: user.username, paypalMe: user.paypalMe, bio: user.bio, profilePicture: user.profilePicture });
+    res.status(201).json(sanitizeUser(user));
   } catch (error) {
     console.error('Register error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -100,7 +112,7 @@ app.post('/api/login', async (req, res) => {
     const valid = await bcrypt.compare(password || '', user.password);
     if (!valid) return res.status(401).json({ error: 'Invalid email or password' });
     await trackEvent('login', req, { username: user.username });
-    res.json({ id: user.id, name: user.name, email: user.email, username: user.username, paypalMe: user.paypalMe, bio: user.bio, profilePicture: user.profilePicture });
+    res.json(sanitizeUser(user));
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -113,9 +125,104 @@ app.get('/api/creator/:username', async (req, res) => {
     const creator = await prisma.user.findUnique({ where: { username } });
     if (!creator || creator.isSuspended) return res.status(404).json({ error: 'Creator not found' });
     await trackEvent('creator_view', req, { username });
-    res.json({ id: creator.id, name: creator.name, username: creator.username, paypalMe: creator.paypalMe, bio: creator.bio, profilePicture: creator.profilePicture });
+    res.json(sanitizeUser(creator));
   } catch (error) {
     console.error('Creator error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.post('/api/support', async (req, res) => {
+  try {
+    const { username, sodaCount, supporterName = '', supporterEmail = '', message = '' } = req.body;
+    const count = Number(sodaCount);
+    if (!username || !Number.isInteger(count) || ![1, 3, 5].includes(count)) {
+      return res.status(400).json({ error: 'Invalid support request' });
+    }
+    const creator = await prisma.user.findUnique({ where: { username: String(username).trim().toLowerCase() } });
+    if (!creator || creator.isSuspended) return res.status(404).json({ error: 'Creator not found' });
+
+    const amount = count;
+    const reference = `SODA-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+    const transaction = await prisma.transaction.create({
+      data: {
+        creatorId: creator.id,
+        amount,
+        currency: 'USD',
+        sodaCount: count,
+        supporterName: String(supporterName).trim().slice(0, 100) || null,
+        supporterEmail: String(supporterEmail).trim().toLowerCase().slice(0, 160) || null,
+        message: String(message).trim().slice(0, 500) || null,
+        provider: 'paypal.me',
+        status: 'pending',
+        reference
+      }
+    });
+
+    if (message && String(message).trim()) {
+      await prisma.supporterMessage.create({
+        data: {
+          creatorId: creator.id,
+          supporterName: String(supporterName).trim().slice(0, 100) || null,
+          supporterEmail: String(supporterEmail).trim().toLowerCase().slice(0, 160) || null,
+          message: String(message).trim().slice(0, 500),
+          transactionId: transaction.id
+        }
+      });
+    }
+
+    await trackEvent('soda_click', req, { username: creator.username, sodaCount: count });
+
+    const paypalBase = creator.paypalMe.replace(/\/$/, '');
+    res.status(201).json({
+      ok: true,
+      reference,
+      amount,
+      status: transaction.status,
+      paymentUrl: `${paypalBase}/${count}`,
+      note: 'Payment is pending confirmation from the payment provider.'
+    });
+  } catch (error) {
+    console.error('Support error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.get('/api/creator-dashboard/:username', async (req, res) => {
+  try {
+    const username = req.params.username.toLowerCase();
+    const creator = await prisma.user.findUnique({ where: { username } });
+    if (!creator || creator.isSuspended) return res.status(404).json({ error: 'Creator not found' });
+
+    const [transactions, messages, events] = await Promise.all([
+      prisma.transaction.findMany({ where: { creatorId: creator.id }, orderBy: { createdAt: 'desc' }, take: 100 }),
+      prisma.supporterMessage.findMany({ where: { creatorId: creator.id }, orderBy: { createdAt: 'desc' }, take: 50 }),
+      prisma.event.findMany({ where: { username: creator.username }, orderBy: { createdAt: 'desc' }, take: 100 })
+    ]);
+
+    const confirmed = transactions.filter(t => t.status === 'completed');
+    const pending = transactions.filter(t => t.status === 'pending');
+    const earnings = confirmed.reduce((sum, t) => sum + t.amount, 0);
+    const pendingAmount = pending.reduce((sum, t) => sum + t.amount, 0);
+    const sodas = confirmed.reduce((sum, t) => sum + t.sodaCount, 0);
+
+    res.json({
+      creator: sanitizeUser(creator),
+      stats: {
+        profileViews: events.filter(e => e.type === 'creator_view').length,
+        sodas,
+        earnings,
+        pendingAmount,
+        confirmedTransactions: confirmed.length,
+        pendingTransactions: pending.length,
+        unreadMessages: messages.filter(m => !m.isRead).length
+      },
+      transactions,
+      messages,
+      activity: events
+    });
+  } catch (error) {
+    console.error('Creator dashboard error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -144,7 +251,7 @@ app.post('/api/admin/logout', (req, res) => {
 app.get('/api/admin/stats', requireAdmin, async (_req, res) => {
   try {
     const start = new Date(); start.setHours(0, 0, 0, 0);
-    const [totalUsers, newToday, pageViewsToday, creatorViewsToday, qrViewsToday, sodaClicksToday, totalEvents, latestUsers, recentEvents] = await Promise.all([
+    const [totalUsers, newToday, pageViewsToday, creatorViewsToday, qrViewsToday, sodaClicksToday, totalEvents, latestUsers, recentEvents, transactions] = await Promise.all([
       prisma.user.count(),
       prisma.user.count({ where: { createdAt: { gte: start } } }),
       prisma.event.count({ where: { type: 'page_view', createdAt: { gte: start } } }),
@@ -153,9 +260,12 @@ app.get('/api/admin/stats', requireAdmin, async (_req, res) => {
       prisma.event.count({ where: { type: 'soda_click', createdAt: { gte: start } } }),
       prisma.event.count(),
       prisma.user.findMany({ orderBy: { createdAt: 'desc' }, take: 20, select: { id: true, name: true, email: true, username: true, createdAt: true, isSuspended: true } }),
-      prisma.event.findMany({ orderBy: { createdAt: 'desc' }, take: 20 })
+      prisma.event.findMany({ orderBy: { createdAt: 'desc' }, take: 20 }),
+      prisma.transaction.findMany({ orderBy: { createdAt: 'desc' }, take: 100, include: { creator: { select: { username: true, name: true } } } })
     ]);
-    res.json({ totalUsers, newToday, viewsToday: pageViewsToday + creatorViewsToday + qrViewsToday, pageViewsToday, creatorViewsToday, qrViewsToday, sodaClicksToday, totalEvents, latestUsers, recentEvents });
+    const completedAmount = transactions.filter(t => t.status === 'completed').reduce((sum, t) => sum + t.amount, 0);
+    const pendingAmount = transactions.filter(t => t.status === 'pending').reduce((sum, t) => sum + t.amount, 0);
+    res.json({ totalUsers, newToday, viewsToday: pageViewsToday + creatorViewsToday + qrViewsToday, pageViewsToday, creatorViewsToday, qrViewsToday, sodaClicksToday, totalEvents, completedAmount, pendingAmount, latestUsers, recentEvents, transactions });
   } catch (error) {
     console.error('Admin stats error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -167,22 +277,27 @@ app.get('/api/admin/users', requireAdmin, async (_req, res) => {
   res.json(users);
 });
 
-app.get('/api/creator-dashboard/:username', async (req, res) => {
+app.post('/api/admin/users/:id/suspend', requireAdmin, async (req, res) => {
   try {
-    const creator = await prisma.user.findUnique({ where: { username: req.params.username.toLowerCase() } });
-    if (!creator || creator.isSuspended) return res.status(404).json({ error: 'Creator not found' });
-    const events = await prisma.event.findMany({ where: { username: creator.username }, orderBy: { createdAt: 'desc' }, take: 100 });
-    const sodaClicks = events.filter(e => e.type === 'soda_click');
-    const sodas = sodaClicks.reduce((sum, e) => sum + (e.sodaCount || 0), 0);
-    res.json({ creator: { id: creator.id, name: creator.name, username: creator.username, email: creator.email, paypalMe: creator.paypalMe, bio: creator.bio, profilePicture: creator.profilePicture }, stats: { profileViews: events.filter(e => e.type === 'creator_view').length, sodas, transactionsRecorded: sodaClicks.length }, activity: events });
+    const user = await prisma.user.update({ where: { id: req.params.id }, data: { isSuspended: true } });
+    res.json({ ok: true, user: { id: user.id, username: user.username, isSuspended: user.isSuspended } });
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(404).json({ error: 'User not found' });
+  }
+});
+
+app.post('/api/admin/users/:id/unsuspend', requireAdmin, async (req, res) => {
+  try {
+    const user = await prisma.user.update({ where: { id: req.params.id }, data: { isSuspended: false } });
+    res.json({ ok: true, user: { id: user.id, username: user.username, isSuspended: user.isSuspended } });
+  } catch (error) {
+    res.status(404).json({ error: 'User not found' });
   }
 });
 
 // Pretty creator URLs. Keep utility/static routes out of this handler.
 app.get('/:username', async (req, res, next) => {
-  const reserved = new Set(['api', 'uploads', 'admin.html', 'creator.html', 'login.html', 'signup.html', 'contact.html', 'how-it-works.html', 'privacy.html', 'terms.html', 'thank-you.html', 'qr.html']);
+  const reserved = new Set(['api', 'uploads', 'admin.html', 'creator.html', 'creator-dashboard.html', 'login.html', 'signup.html', 'contact.html', 'how-it-works.html', 'privacy.html', 'terms.html', 'thank-you.html', 'qr.html']);
   if (reserved.has(req.params.username)) return next();
   res.sendFile(path.join(__dirname, 'creator.html'));
 });
