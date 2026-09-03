@@ -15,7 +15,7 @@
     .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:16px; margin-bottom:24px; }
     .stat-card,.panel { background:#fff; border:1px solid #e2e8f0; border-radius:16px; box-shadow:0 8px 30px rgba(15,23,42,.05); }
     .stat-card { padding:0; overflow:hidden; }
-    .stat-button { width:100%; min-height:112px; padding:22px; border:0; background:transparent; text-align:left; cursor:pointer; }
+    .stat-button { display:block; width:100%; min-height:112px; padding:22px; border:0; background:transparent; text-align:left; cursor:pointer; font:inherit; color:inherit; }
     .stat-button:hover { background:#f8fafc; }
     .stat-button:focus-visible { outline:3px solid rgba(59,130,246,.25); outline-offset:-3px; }
     .stat-card span { display:block; color:#64748b; font-size:.9rem; margin-bottom:8px; }
@@ -74,9 +74,9 @@
       <div class="stat-card"><button type="button" class="stat-button" data-scroll-target="messagesPanel"><span>Unread Messages</span><strong id="messagesCount">0</strong><small class="hint">Open inbox</small></button></div>
       <div class="stat-card"><button type="button" class="stat-button" data-scroll-target="transactionsPanel"><span>Pending Support</span><strong id="pendingAmount">$0.00</strong><small class="hint">View support attempts</small></button></div>
       <div class="stat-card"><button type="button" class="stat-button" data-scroll-target="transactionsPanel"><span>Confirmed Transactions</span><strong id="transactions">0</strong><small class="hint">View history</small></button></div>
-      <div class="stat-card"><button type="button" class="stat-button" data-scroll-target="profilePanel"><span>Profile Views</span><strong id="profileViews">0</strong><small class="hint">Public page traffic</small></button></div>
-      <div class="stat-card"><div class="stat-button" aria-hidden="true"><span>Sodas Received</span><strong id="sodas">0</strong><small class="hint">Confirmed support</small></div></div>
-      <div class="stat-card"><div class="stat-button" aria-hidden="true"><span>Confirmed Earnings</span><strong id="earnings">$0.00</strong><small class="hint">Confirmed net earnings</small></div></div>
+      <div class="stat-card"><button type="button" class="stat-button" data-scroll-target="activityPanel"><span>Profile Views</span><strong id="profileViews">0</strong><small class="hint">Public page traffic</small></button></div>
+      <div class="stat-card"><button type="button" class="stat-button" data-scroll-target="transactionsPanel"><span>Sodas Received</span><strong id="sodas">0</strong><small class="hint">View confirmed support</small></button></div>
+      <div class="stat-card"><button type="button" class="stat-button" data-scroll-target="transactionsPanel"><span>Confirmed Earnings</span><strong id="earnings">$0.00</strong><small class="hint">View confirmed earnings</small></button></div>
     </section>
 
     <section class="layout">
@@ -89,7 +89,7 @@
         <h3>Support Link</h3><p id="dashboardPaypalMe" class="muted">Loading...</p>
       </div>
 
-      <div class="panel">
+      <div class="panel" id="activityPanel">
         <div class="panel-header"><h3>Recent Activity</h3><button id="activityRefresh" type="button" class="secondary-btn">Refresh</button></div>
         <div id="activityList"><p class="muted">Loading...</p></div>
       </div>
@@ -120,23 +120,27 @@
       const messageSummary = document.getElementById('messageSummary');
       const messagesCount = document.getElementById('messagesCount');
       let latestMessages = [];
-      let latestData = null;
 
       if (user && link) link.href = `/${encodeURIComponent(user.username)}`;
       if (!user) return;
 
-      const esc = (value) => String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+      const esc = (value) => String(value ?? '').replace(/[&<>'\"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[c]));
       const formatDate = (value) => { const d = new Date(value); return Number.isNaN(d.getTime()) ? 'Unknown date' : d.toLocaleString(); };
 
-      function scrollToSection(id) { document.getElementById(id)?.scrollIntoView({ behavior:'smooth', block:'start' }); }
-      document.querySelectorAll('[data-scroll-target]').forEach(button => button.addEventListener('click', () => scrollToSection(button.dataset.scrollTarget)));
+      function scrollToSection(id) {
+        const target = document.getElementById(id);
+        if (!target) return;
+        target.scrollIntoView({ behavior:'smooth', block:'start' });
+        setTimeout(() => { target.classList.add('dashboard-focus'); setTimeout(() => target.classList.remove('dashboard-focus'), 1200); }, 250);
+      }
+
+      document.querySelectorAll('[data-scroll-target]').forEach(button => {
+        button.addEventListener('click', () => scrollToSection(button.dataset.scrollTarget));
+      });
 
       function renderMessages() {
         const q = String(messageSearch?.value || '').trim().toLowerCase();
-        const filtered = latestMessages.filter(message => {
-          if (!q) return true;
-          return [message.supporterName, message.supporterEmail, message.message].some(value => String(value || '').toLowerCase().includes(q));
-        });
+        const filtered = latestMessages.filter(message => !q || [message.supporterName, message.supporterEmail, message.message].some(value => String(value || '').toLowerCase().includes(q)));
         const unread = latestMessages.filter(message => !message.isRead).length;
         if (messageSummary) messageSummary.textContent = `${filtered.length} shown · ${unread} unread`;
         if (messagesCount) messagesCount.textContent = unread;
@@ -189,7 +193,6 @@
       async function loadDashboard() {
         try {
           const data = await API.getCreatorDashboard();
-          latestData = data;
           latestMessages = Array.isArray(data.messages) ? data.messages : [];
           const c = data.creator || {}, s = data.stats || {};
           document.getElementById('dashboardName').textContent = c.name || c.username || 'Creator';
