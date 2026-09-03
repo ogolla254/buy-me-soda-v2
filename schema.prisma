@@ -8,16 +8,46 @@ generator client {
 }
 
 model User {
-  id             String   @id @default(uuid())
+  id             String        @id @default(uuid())
   name           String
-  email          String   @unique
-  username       String   @unique
+  email          String        @unique
+  username       String        @unique
   password       String
   paypalMe       String
-  profilePicture String   @default("")
-  bio            String   @default("")
+  profilePicture String        @default("")
+  bio            String        @default("")
+  createdAt      DateTime      @default(now())
+  isSuspended    Boolean       @default(false)
+  transactions   Transaction[] @relation("CreatorTransactions")
+  messages       SupporterMessage[]
+}
+
+model Transaction {
+  id             String   @id @default(uuid())
+  creatorId      String
+  amount         Float
+  currency       String   @default("USD")
+  sodaCount      Int
+  supporterName  String?
+  supporterEmail String?
+  message        String?
+  provider       String   @default("manual")
+  status         String   @default("pending")
+  reference      String?  @unique
   createdAt      DateTime @default(now())
-  isSuspended    Boolean  @default(false)
+  creator        User     @relation("CreatorTransactions", fields: [creatorId], references: [id], onDelete: Cascade)
+}
+
+model SupporterMessage {
+  id             String   @id @default(uuid())
+  creatorId      String
+  supporterName  String?
+  supporterEmail String?
+  message        String
+  transactionId  String?
+  isRead         Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  creator        User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
 }
 
 model Event {
