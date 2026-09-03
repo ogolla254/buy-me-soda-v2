@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find a Creator - Buy Me a Soda</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { min-height:100vh; padding-top:88px; background:linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#3b82f6 100%); }
+        .discover-page { width:min(1100px,calc(100% - 32px)); margin:auto; padding:48px 0 70px; }
+        .discover-hero { text-align:center; color:#fff; margin-bottom:32px; }
+        .discover-hero h1 { font-size:clamp(2.2rem,6vw,4rem); margin:0 0 10px; }
+        .discover-hero p { font-size:1.1rem; opacity:.9; }
+        .search-box { display:flex; gap:10px; max-width:760px; margin:26px auto 0; flex-wrap:wrap; }
+        .search-box input { flex:1; min-width:240px; padding:16px 18px; border-radius:14px; border:0; outline:none; font-size:1rem; }
+        .search-box button { border:0; border-radius:14px; padding:16px 24px; cursor:pointer; font-weight:700; background:#ff8c42; color:#fff; }
+        .directory-card { background:rgba(255,255,255,.97); border-radius:22px; padding:26px; box-shadow:0 20px 60px rgba(0,0,0,.2); }
+        .directory-heading { display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:20px; }
+        .directory-heading h2 { margin:0; color:#0f172a; }
+        #resultCount { color:#64748b; font-size:.95rem; }
+        .results { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:18px; }
+        .creator-result { border:1px solid #e2e8f0; border-radius:18px; padding:20px; background:#fff; display:flex; flex-direction:column; gap:14px; }
+        .creator-top { display:flex; align-items:center; gap:14px; }
+        .creator-avatar { width:58px; height:58px; border-radius:50%; object-fit:cover; background:#e2e8f0; flex:0 0 auto; }
+        .creator-result h3 { margin:0; color:#0f172a; }
+        .creator-username { color:#64748b; font-size:.9rem; }
+        .creator-bio { color:#475569; line-height:1.5; min-height:45px; }
+        .support-creator { display:inline-flex; justify-content:center; align-items:center; text-decoration:none; border-radius:12px; padding:12px 16px; background:#ff6b35; color:#fff; font-weight:700; }
+        .empty { text-align:center; padding:40px 15px; color:#64748b; grid-column:1/-1; }
+        @media(max-width:600px){ .discover-page{width:calc(100% - 20px)} .directory-card{padding:18px} }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-logo"><a href="index.html" class="nav-logo-link"><h2>Buy Me a Soda 🥤</h2></a></div>
+        <div class="nav-links">
+            <a href="index.html" class="btn btn-login">Home</a>
+            <a href="signup.html" class="btn btn-signup">Become a Creator</a>
+        </div>
+    </div>
+</nav>
+
+<main class="discover-page">
+    <section class="discover-hero">
+        <h1>Find a Creator</h1>
+        <p>Discover creators on BuyMeSoda and support their work.</p>
+        <form id="searchForm" class="search-box">
+            <input id="searchInput" type="search" placeholder="Search by name or username..." autocomplete="off">
+            <button type="submit">Search</button>
+        </form>
+    </section>
+
+    <section class="directory-card">
+        <div class="directory-heading">
+            <h2 id="directoryTitle">Creators on BuyMeSoda</h2>
+            <span id="resultCount">Loading...</span>
+        </div>
+        <div id="creatorGrid" class="results"></div>
+    </section>
+</main>
+
+<script>
+(function(){
+    const grid = document.getElementById('creatorGrid');
+    const count = document.getElementById('resultCount');
+    const title = document.getElementById('directoryTitle');
+    const input = document.getElementById('searchInput');
+    const escapeHtml = (v) => String(v ?? '').replace(/[&<>\'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\'':'&#39;','"':'&quot;'}[c]));
+
+    async function loadCreators(query) {
+        grid.innerHTML = '<div class="empty">Loading creators...</div>';
+        try {
+            const response = await fetch('/api/creators?q=' + encodeURIComponent(query || ''));
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Could not load creators');
+            const creators = data.creators || [];
+            title.textContent = query ? 'Search results' : 'Creators on BuyMeSoda';
+            count.textContent = creators.length + (creators.length === 1 ? ' creator' : ' creators');
+            if (!creators.length) {
+                grid.innerHTML = '<div class="empty"><h3>No creator found</h3><p>Try another name or username.</p></div>';
+                return;
+            }
+            grid.innerHTML = creators.map(c => {
+                const avatar = c.profilePicture || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(c.name || c.username) + '&rounded=true';
+                return '<article class="creator-result">' +
+                    '<div class="creator-top"><img class="creator-avatar" src="' + escapeHtml(avatar) + '" alt="' + escapeHtml(c.name || c.username) + '">' +
+                    '<div><h3>' + escapeHtml(c.name || c.username) + '</h3><div class="creator-username">@' + escapeHtml(c.username) + '</div></div></div>' +
+                    '<div class="creator-bio">' + escapeHtml(c.bio || 'Support this creator with a Soda.') + '</div>' +
+                    '<a class="support-creator" href="/' + encodeURIComponent(c.username) + '">View & Support</a>' +
+                    '</article>';
+            }).join('');
+        } catch (error) {
+            grid.innerHTML = '<div class="empty"><h3>Creator directory unavailable</h3><p>' + escapeHtml(error.message) + '</p></div>';
+            count.textContent = '';
+        }
+    }
+
+    document.getElementById('searchForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const q = input.value.trim();
+        history.replaceState({}, '', q ? 'discover.html?q=' + encodeURIComponent(q) : 'discover.html');
+        loadCreators(q);
+    });
+
+    const initial = new URLSearchParams(location.search).get('q') || '';
+    input.value = initial;
+    loadCreators(initial);
+})();
+</script>
+</body>
+</html>
