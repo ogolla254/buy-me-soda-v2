@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buy Me a Soda 🥤 - Support Your Favorite Creators</title>
-    <meta name="description" content="Buy Me a Soda - Simple QR payment platform for creators. Support your favorite creators with instant PayPal.Me payments.">
-    <meta name="keywords" content="buy me a soda, creator support, paypal, qr payment, tip creator, donation platform">
+    <meta name="description" content="Discover creators and support them with Buy Me a Soda.">
     <meta name="robots" content="index, follow">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,23 +12,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lobster&family=Pacifico&family=Righteous&family=Satisfy&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <a href="index.html" class="nav-logo-link">
-                    <h2>Buy Me a Soda 🥤</h2>
-                </a>
+                <a href="index.html" class="nav-logo-link"><h2>Buy Me a Soda 🥤</h2></a>
             </div>
             <div class="nav-links">
-                <a href="#" class="dark-mode-toggle"><span class="icon"></span>🌙</span></a>
+                <a href="discover.html" class="btn btn-login">Find Creators</a>
                 <a href="login.html" class="btn btn-login">Login</a>
                 <a href="signup.html" class="btn btn-signup">Sign Up</a>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <section class="hero">
         <div class="hero-container">
             <div class="hero-content">
@@ -39,67 +34,36 @@
                     </a>
                 </div>
                 <h2 class="hero-headline">Earn from your passion. Join the global creator community.</h2>
-                <p class="hero-subtitle">Accept support from fans instantly through M-Pesa, PayPal, and QR payments.</p>
+                <p class="hero-subtitle">Discover creators, share your page, and let supporters buy you a soda.</p>
+
+                <div style="max-width:760px;margin:24px auto 12px;">
+                    <form id="homeCreatorSearchForm" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+                        <input id="homeCreatorSearch" type="search" placeholder="Search for a creator by name or username..." autocomplete="off" style="flex:1;min-width:240px;padding:15px 18px;border-radius:14px;border:0;outline:none;font-size:1rem;">
+                        <button type="submit" class="btn btn-primary btn-large" style="border:0;cursor:pointer;">Find Creator</button>
+                    </form>
+                </div>
+
                 <div class="hero-buttons">
                     <a href="signup.html" class="btn btn-primary btn-large">Sign Up as a Creator</a>
-                    <a href="#creators" class="btn btn-secondary btn-large">Explore Creators</a>
+                    <a href="discover.html" class="btn btn-secondary btn-large">Explore Creators</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Featured Creators Section -->
     <section id="creators" class="featured-creators">
         <div class="section-container">
             <h2 class="section-title">Featured Creators</h2>
-            <div class="creator-grid">
-                <div class="creator-card">
-                    <div class="creator-avatar">
-                        <img src="https://ui-avatars.com/api/?name=Creator1&background=random&rounded=true" alt="Creator">
-                    </div>
-                    <div class="creator-info">
-                        <h3>Creator One</h3>
-                        <p>Content creator sharing amazing content daily</p>
-                        <div class="creator-stats">
-                            <span>🥤 1,234 sodas</span>
-                        </div>
-                    </div>
-                    <a href="#" class="btn btn-outline">Support</a>
-                </div>
-                <div class="creator-card">
-                    <div class="creator-avatar">
-                        <img src="https://ui-avatars.com/api/?name=Creator2&background=random&rounded=true" alt="Creator">
-                    </div>
-                    <div class="creator-info">
-                        <h3>Creator Two</h3>
-                        <p>Digital artist and creative designer</p>
-                        <div class="creator-stats">
-                            <span>🥤 892 sodas</span>
-                        </div>
-                    </div>
-                    <a href="#" class="btn btn-outline">Support</a>
-                </div>
-                <div class="creator-card">
-                    <div class="creator-avatar">
-                        <img src="https://ui-avatars.com/api/?name=Creator3&background=random&rounded=true" alt="Creator">
-                    </div>
-                    <div class="creator-info">
-                        <h3>Creator Three</h3>
-                        <p>Music producer and sound designer</p>
-                        <div class="creator-stats">
-                            <span>🥤 567 sodas</span>
-                        </div>
-                    </div>
-                    <a href="#" class="btn btn-outline">Support</a>
-                </div>
+            <p style="text-align:center;margin:-10px auto 26px;max-width:700px;opacity:.8;">Real creators from the BuyMeSoda community.</p>
+            <div id="homepageCreatorGrid" class="creator-grid">
+                <div style="grid-column:1/-1;text-align:center;padding:30px;">Loading creators...</div>
             </div>
             <div class="explore-more">
-                <a href="#" class="btn btn-secondary">Explore More Creators</a>
+                <a href="discover.html" class="btn btn-secondary">Explore More Creators</a>
             </div>
         </div>
     </section>
 
-    <!-- How It Works Section -->
     <section id="how-it-works" class="how-it-works">
         <div class="section-container">
             <h2 class="section-title">How It Works</h2>
@@ -108,43 +72,40 @@
                     <div class="step-number">1</div>
                     <div class="step-content">
                         <h3>Create Your Page</h3>
-                        <p>Sign up and customize your creator page with your PayPal.Me link and personal info.</p>
+                        <p>Sign up and set up your public creator page.</p>
                     </div>
                 </div>
                 <div class="step-card">
                     <div class="step-number">2</div>
                     <div class="step-content">
-                        <h3>Share Your QR Code</h3>
-                        <p>Get a unique QR code that links directly to your support page.</p>
+                        <h3>Share Your Link or QR</h3>
+                        <p>Share your personal BuyMeSoda page or QR code anywhere.</p>
                     </div>
                 </div>
                 <div class="step-card">
                     <div class="step-number">3</div>
                     <div class="step-content">
                         <h3>Receive Support</h3>
-                        <p>Supporters scan your QR code or click payment buttons to buy you a soda!</p>
+                        <p>Supporters choose a Soda amount and send a message.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- QR Code Demo Section -->
     <section class="qr-demo-section">
         <div class="section-container">
             <h2 class="section-title">Instant QR Code Generation</h2>
             <div class="qr-demo-container">
                 <div class="qr-demo-card">
-                    <div class="qr-code-demo">
-                        <div class="qr-pattern"></div>
-                    </div>
+                    <div class="qr-code-demo"><div class="qr-pattern"></div></div>
                     <div class="qr-features">
                         <h3>Smart QR Codes</h3>
                         <ul>
                             <li>✨ Automatically generated for each creator</li>
                             <li>📱 Mobile-friendly scanning</li>
-                            <li>🔗 Direct link to your support page</li>
-                            <li>🎨 Customizable design options</li>
+                            <li>🔗 Direct link to the creator's support page</li>
+                            <li>🎨 Easy to share</li>
                         </ul>
                     </div>
                 </div>
@@ -152,89 +113,90 @@
         </div>
     </section>
 
-    <!-- Payment Methods Section -->
     <section class="payment-methods">
         <div class="section-container">
-            <h2 class="section-title">Secure Payment Methods</h2>
+            <h2 class="section-title">Payment Methods</h2>
             <div class="payment-grid">
-                <div class="payment-card">
-                    <div class="payment-icon">💳</div>
-                    <h3>PayPal.Me</h3>
-                    <p>Instant, secure payments through PayPal's trusted platform.</p>
-                </div>
-                <div class="payment-card">
-                    <div class="payment-icon">🔒</div>
-                    <h3>Secure Transactions</h3>
-                    <p>All payments are processed through secure, encrypted channels.</p>
-                </div>
-                <div class="payment-card">
-                    <div class="payment-icon">⚡</div>
-                    <h3>Instant Support</h3>
-                    <p>Supporters can buy you a soda with just one click.</p>
-                </div>
+                <div class="payment-card"><div class="payment-icon">💳</div><h3>PayPal.Me</h3><p>Support creators through their linked PayPal.Me page.</p></div>
+                <div class="payment-card"><div class="payment-icon">🔒</div><h3>Tracked Support</h3><p>Support attempts are recorded and remain pending until confirmed.</p></div>
+                <div class="payment-card"><div class="payment-icon">⚡</div><h3>Simple Support</h3><p>Choose a Soda amount and support your favorite creator quickly.</p></div>
             </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
     <section class="cta-section">
         <div class="section-container">
             <div class="cta-content">
                 <h2 class="cta-title">Ready to Start Receiving Support?</h2>
-                <p class="cta-subtitle">Join thousands of creators who are already using Buy Me a Soda to connect with their supporters.</p>
+                <p class="cta-subtitle">Create your creator page, share your link, and start building your support community.</p>
                 <div class="cta-buttons">
                     <a href="signup.html" class="btn btn-primary btn-large">Create Your Creator Page</a>
-                    <a href="#how-it-works" class="btn btn-secondary btn-large">Learn More</a>
+                    <a href="discover.html" class="btn btn-secondary btn-large">Find a Creator</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-content">
                 <div class="footer-logo">
                     <h3>Buy Me a Soda 🥤</h3>
-                    <p>Simple creator support platform</p>
+                    <p>Creator support platform</p>
                 </div>
                 <div class="footer-links">
                     <h4 class="footer-links-title">Links</h4>
                     <a href="how-it-works.html">How It Works</a>
+                    <a href="discover.html">Find Creators</a>
                     <a href="terms.html">Terms of Service</a>
                     <a href="privacy.html">Privacy Policy</a>
                     <a href="contact.html">Contact Us</a>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Buy Me a Soda. All Rights Reserved.</p>
-            </div>
+            <div class="footer-bottom"><p>&copy; 2026 Buy Me a Soda. All Rights Reserved.</p></div>
         </div>
     </footer>
-    
+
     <script>
-        // Dark mode toggle functionality
-        const darkModeToggle = document.querySelector('.dark-mode-toggle');
-        const body = document.body;
-        
-        // Check for saved dark mode preference
-        const savedDarkMode = localStorage.getItem('darkMode');
-        if (savedDarkMode === 'enabled') {
-            body.classList.add('dark-mode');
-            darkModeToggle.innerHTML = '<span class="icon">☀️</span>';
-        }
-        
-        darkModeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark-mode');
-            const isDarkMode = body.classList.contains('dark-mode');
-            
-            if (isDarkMode) {
-                darkModeToggle.innerHTML = '<span class="icon">☀️</span>';
-                localStorage.setItem('darkMode', 'enabled');
-            } else {
-                darkModeToggle.innerHTML = '<span class="icon">🌙</span>';
-                localStorage.setItem('darkMode', 'disabled');
-            }
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('homeCreatorSearchForm');
+            const input = document.getElementById('homeCreatorSearch');
+            form?.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const q = input.value.trim();
+                window.location.href = q ? `discover.html?q=${encodeURIComponent(q)}` : 'discover.html';
+            });
+
+            const grid = document.getElementById('homepageCreatorGrid');
+            if (!grid) return;
+
+            const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+
+            fetch('/api/creators')
+                .then((response) => response.json())
+                .then((data) => {
+                    const creators = data.creators || [];
+                    if (!creators.length) {
+                        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:30px;">No creators yet. Be the first to sign up!</div>';
+                        return;
+                    }
+                    grid.innerHTML = creators.slice(0, 3).map((creator) => {
+                        const avatar = creator.profilePicture || `https://ui-avatars.com/api/?name=${encodeURIComponent(creator.name || creator.username)}&rounded=true`;
+                        return `
+                            <div class="creator-card">
+                                <div class="creator-avatar"><img src="${escapeHtml(avatar)}" alt="${escapeHtml(creator.name || creator.username)}"></div>
+                                <div class="creator-info">
+                                    <h3>${escapeHtml(creator.name || creator.username)}</h3>
+                                    <p>${escapeHtml(creator.bio || 'Support this creator with a Soda')}</p>
+                                    <div class="creator-stats"><span>🥤 Creator</span></div>
+                                </div>
+                                <a href="/${encodeURIComponent(creator.username)}" class="btn btn-outline">Support</a>
+                            </div>`;
+                    }).join('');
+                })
+                .catch(() => {
+                    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:30px;">Creator directory is temporarily unavailable.</div>';
+                });
         });
     </script>
     <script src="script.js"></script>
