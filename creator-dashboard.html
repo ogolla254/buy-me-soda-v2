@@ -14,11 +14,16 @@
     .dashboard-actions a,.dashboard-actions button { border:0; text-decoration:none; cursor:pointer; }
     .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:16px; margin-bottom:24px; }
     .stat-card,.panel { background:#fff; border:1px solid #e2e8f0; border-radius:16px; box-shadow:0 8px 30px rgba(15,23,42,.05); }
-    .stat-card { padding:22px; }
+    .stat-card { padding:0; overflow:hidden; }
+    .stat-button { width:100%; min-height:112px; padding:22px; border:0; background:transparent; text-align:left; cursor:pointer; }
+    .stat-button:hover { background:#f8fafc; }
+    .stat-button:focus-visible { outline:3px solid rgba(59,130,246,.25); outline-offset:-3px; }
     .stat-card span { display:block; color:#64748b; font-size:.9rem; margin-bottom:8px; }
     .stat-card strong { font-size:1.8rem; color:#0f172a; }
     .layout { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
     .panel { padding:24px; margin-bottom:20px; }
+    .panel-header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
+    .panel-header h3 { margin:0; }
     .profile-head { display:flex; align-items:center; gap:18px; margin-bottom:20px; }
     .profile-head img { width:82px; height:82px; border-radius:50%; object-fit:cover; border:3px solid #e2e8f0; }
     .profile-head h2 { margin:0 0 4px; }
@@ -27,16 +32,23 @@
     .activity-item:last-child { border-bottom:0; }
     .activity-item span { color:#64748b; font-size:.85rem; text-align:right; }
     .full-width { grid-column:1 / -1; }
+    .message-toolbar { display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; margin-bottom:12px; }
+    .message-toolbar input { flex:1; min-width:220px; padding:11px 13px; border:1px solid #cbd5e1; border-radius:10px; }
     .message-card { border:1px solid #e2e8f0; border-radius:14px; padding:16px; margin:12px 0; background:#f8fafc; }
     .message-card.unread { border-color:#f59e0b; background:#fffbeb; }
     .message-head { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
     .message-head strong { color:#0f172a; }
     .message-meta { color:#64748b; font-size:.83rem; margin-top:4px; }
     .message-body { margin:12px 0; color:#334155; line-height:1.5; white-space:pre-wrap; }
-    .message-actions { display:flex; justify-content:flex-end; }
-    .read-btn { border:1px solid #cbd5e1; background:#fff; border-radius:10px; padding:8px 12px; cursor:pointer; font-weight:600; }
-    .read-btn:hover { background:#f1f5f9; }
+    .message-actions { display:flex; justify-content:flex-end; gap:8px; }
+    .read-btn,.secondary-btn { border:1px solid #cbd5e1; background:#fff; border-radius:10px; padding:8px 12px; cursor:pointer; font-weight:600; }
+    .read-btn:hover,.secondary-btn:hover { background:#f1f5f9; }
     .badge { display:inline-block; padding:4px 8px; border-radius:999px; font-size:.75rem; font-weight:700; background:#f59e0b; color:#fff; }
+    .status-badge { display:inline-block; padding:4px 8px; border-radius:999px; font-size:.74rem; font-weight:700; text-transform:capitalize; }
+    .status-pending { background:#fef3c7; color:#92400e; }
+    .status-completed { background:#dcfce7; color:#166534; }
+    .status-failed,.status-cancelled { background:#fee2e2; color:#991b1b; }
+    .stat-button .hint { display:block; margin-top:6px; font-size:.75rem; color:#94a3b8; }
     @media(max-width:800px){ .layout{grid-template-columns:1fr;} .full-width{grid-column:auto;} .dashboard-top{align-items:flex-start; flex-direction:column;} }
   </style>
 </head>
@@ -54,20 +66,21 @@
       <div class="dashboard-actions">
         <a id="publicProfileLink" href="#" class="btn btn-secondary">View Public Page</a>
         <a href="qr.html" class="btn btn-primary">My QR Code</a>
+        <button id="dashboardRefresh" type="button" class="btn btn-secondary">Refresh</button>
       </div>
     </div>
 
     <section class="stats-grid">
-      <div class="stat-card"><span>Profile Views</span><strong id="profileViews">0</strong></div>
-      <div class="stat-card"><span>Sodas Received</span><strong id="sodas">0</strong></div>
-      <div class="stat-card"><span>Confirmed Earnings</span><strong id="earnings">$0.00</strong></div>
-      <div class="stat-card"><span>Pending Support</span><strong id="pendingAmount">$0.00</strong></div>
-      <div class="stat-card"><span>Confirmed Transactions</span><strong id="transactions">0</strong></div>
-      <div class="stat-card"><span>Unread Messages</span><strong id="messagesCount">0</strong></div>
+      <div class="stat-card"><button type="button" class="stat-button" data-scroll-target="messagesPanel"><span>Unread Messages</span><strong id="messagesCount">0</strong><small class="hint">Open inbox</small></button></div>
+      <div class="stat-card"><button type="button" class="stat-button" data-scroll-target="transactionsPanel"><span>Pending Support</span><strong id="pendingAmount">$0.00</strong><small class="hint">View support attempts</small></button></div>
+      <div class="stat-card"><button type="button" class="stat-button" data-scroll-target="transactionsPanel"><span>Confirmed Transactions</span><strong id="transactions">0</strong><small class="hint">View history</small></button></div>
+      <div class="stat-card"><button type="button" class="stat-button" data-scroll-target="profilePanel"><span>Profile Views</span><strong id="profileViews">0</strong><small class="hint">Public page traffic</small></button></div>
+      <div class="stat-card"><div class="stat-button" aria-hidden="true"><span>Sodas Received</span><strong id="sodas">0</strong><small class="hint">Confirmed support</small></div></div>
+      <div class="stat-card"><div class="stat-button" aria-hidden="true"><span>Confirmed Earnings</span><strong id="earnings">$0.00</strong><small class="hint">Confirmed net earnings</small></div></div>
     </section>
 
     <section class="layout">
-      <div class="panel">
+      <div class="panel" id="profilePanel">
         <div class="profile-head">
           <img id="dashboardImage" src="https://ui-avatars.com/api/?name=Creator&rounded=true" alt="Creator profile">
           <div><h2 id="dashboardName">Loading...</h2><div class="muted">Creator account</div></div>
@@ -77,18 +90,22 @@
       </div>
 
       <div class="panel">
-        <h3>Recent Activity</h3><div id="activityList"><p class="muted">Loading...</p></div>
+        <div class="panel-header"><h3>Recent Activity</h3><button id="activityRefresh" type="button" class="secondary-btn">Refresh</button></div>
+        <div id="activityList"><p class="muted">Loading...</p></div>
       </div>
 
-      <div class="panel full-width">
-        <h3>Messages from Supporters</h3>
-        <p class="muted">Messages sent with support attempts appear here. Unread messages are highlighted.</p>
+      <div class="panel full-width" id="messagesPanel">
+        <div class="panel-header"><div><h3>Messages from Supporters</h3><p class="muted">Messages sent with support attempts appear here. Unread messages are highlighted.</p></div><button id="markAllRead" type="button" class="secondary-btn">Mark all as read</button></div>
+        <div class="message-toolbar">
+          <input id="messageSearch" type="search" placeholder="Search messages by supporter, email, or text..." autocomplete="off">
+          <span id="messageSummary" class="muted">Loading messages...</span>
+        </div>
         <div id="messageList"><p class="muted">Loading messages...</p></div>
       </div>
 
-      <div class="panel full-width">
-        <h3>Support Activity</h3>
-        <p class="muted">Support attempts appear here as pending until a payment provider confirms the payment.</p>
+      <div class="panel full-width" id="transactionsPanel">
+        <div class="panel-header"><h3>Support Activity</h3><button id="transactionRefresh" type="button" class="secondary-btn">Refresh</button></div>
+        <p class="muted">Support attempts remain pending until a payment provider confirms the payment.</p>
         <div id="transactionList"><p class="muted">Loading...</p></div>
       </div>
     </section>
@@ -98,67 +115,140 @@
     document.addEventListener('DOMContentLoaded', () => {
       const user = UserSession.getCurrentUser();
       const link = document.getElementById('publicProfileLink');
-      if (user && link) link.href = `/${user.username}`;
-
       const messageList = document.getElementById('messageList');
-      if (!messageList || !user) return;
+      const messageSearch = document.getElementById('messageSearch');
+      const messageSummary = document.getElementById('messageSummary');
+      const messagesCount = document.getElementById('messagesCount');
+      let latestMessages = [];
+      let latestData = null;
+
+      if (user && link) link.href = `/${encodeURIComponent(user.username)}`;
+      if (!user) return;
 
       const esc = (value) => String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+      const formatDate = (value) => { const d = new Date(value); return Number.isNaN(d.getTime()) ? 'Unknown date' : d.toLocaleString(); };
 
-      async function loadMessages() {
+      function scrollToSection(id) { document.getElementById(id)?.scrollIntoView({ behavior:'smooth', block:'start' }); }
+      document.querySelectorAll('[data-scroll-target]').forEach(button => button.addEventListener('click', () => scrollToSection(button.dataset.scrollTarget)));
+
+      function renderMessages() {
+        const q = String(messageSearch?.value || '').trim().toLowerCase();
+        const filtered = latestMessages.filter(message => {
+          if (!q) return true;
+          return [message.supporterName, message.supporterEmail, message.message].some(value => String(value || '').toLowerCase().includes(q));
+        });
+        const unread = latestMessages.filter(message => !message.isRead).length;
+        if (messageSummary) messageSummary.textContent = `${filtered.length} shown · ${unread} unread`;
+        if (messagesCount) messagesCount.textContent = unread;
+        if (!filtered.length) {
+          messageList.innerHTML = `<p class="muted">${q ? 'No messages match your search.' : 'No supporter messages yet.'}</p>`;
+          return;
+        }
+        messageList.innerHTML = filtered.slice(0, 50).map(message => `
+          <article class="message-card ${message.isRead ? '' : 'unread'}" data-message-id="${esc(message.id)}">
+            <div class="message-head">
+              <div>
+                <strong>${esc(message.supporterName || 'Anonymous supporter')}</strong>
+                <div class="message-meta">${message.supporterEmail ? esc(message.supporterEmail) : 'No email provided'} · ${formatDate(message.createdAt)}</div>
+              </div>
+              ${message.isRead ? '' : '<span class="badge">Unread</span>'}
+            </div>
+            <div class="message-body">${esc(message.message)}</div>
+            <div class="message-meta">Linked support: ${message.transactionId ? 'Yes' : 'No'}</div>
+            <div class="message-actions">
+              ${message.transactionId ? `<button type="button" class="secondary-btn transaction-link" data-transaction-id="${esc(message.transactionId)}">View support</button>` : ''}
+              ${message.isRead ? '' : `<button type="button" class="read-btn" data-read-id="${esc(message.id)}">Mark as read</button>`}
+            </div>
+          </article>
+        `).join('');
+
+        messageList.querySelectorAll('[data-read-id]').forEach(button => {
+          button.addEventListener('click', async () => {
+            button.disabled = true;
+            try {
+              await API.request('/api/creator/messages/' + encodeURIComponent(button.dataset.readId) + '/read', { method:'POST' });
+              latestMessages = latestMessages.map(message => message.id === button.dataset.readId ? { ...message, isRead:true } : message);
+              renderMessages();
+              showMessage('Message marked as read.', 'success');
+            } catch (error) {
+              button.disabled = false;
+              showMessage(error.message || 'Could not mark message as read', 'error');
+            }
+          });
+        });
+
+        messageList.querySelectorAll('.transaction-link').forEach(button => {
+          button.addEventListener('click', () => {
+            const target = document.querySelector(`[data-transaction-id="${CSS.escape(button.dataset.transactionId)}"]`);
+            if (target) target.scrollIntoView({ behavior:'smooth', block:'center' });
+            else scrollToSection('transactionsPanel');
+          });
+        });
+      }
+
+      async function loadDashboard() {
         try {
-          const response = await fetch('/api/creator-dashboard', { credentials: 'same-origin' });
-          const data = await response.json();
-          if (!response.ok) throw new Error(data.error || 'Could not load messages');
-          const messages = data.messages || [];
+          const data = await API.getCreatorDashboard();
+          latestData = data;
+          latestMessages = Array.isArray(data.messages) ? data.messages : [];
+          const c = data.creator || {}, s = data.stats || {};
+          document.getElementById('dashboardName').textContent = c.name || c.username || 'Creator';
+          document.getElementById('dashboardUsername').textContent = c.username ? `@${c.username}` : '';
+          document.getElementById('profileViews').textContent = s.profileViews ?? 0;
+          document.getElementById('sodas').textContent = s.sodas ?? 0;
+          document.getElementById('transactions').textContent = s.confirmedTransactions ?? 0;
+          document.getElementById('earnings').textContent = `$${Number(s.earnings || 0).toFixed(2)}`;
+          document.getElementById('pendingAmount').textContent = `$${Number(s.pendingAmount || 0).toFixed(2)}`;
+          document.getElementById('messagesCount').textContent = s.unreadMessages ?? 0;
+          document.getElementById('dashboardPaypalMe').textContent = c.paypalMe || 'Not set';
+          document.getElementById('dashboardBio').textContent = c.bio || 'No bio yet.';
+          if (c.profilePicture) document.getElementById('dashboardImage').src = c.profilePicture;
 
-          if (!messages.length) {
-            messageList.innerHTML = '<p class="muted">No supporter messages yet.</p>';
+          const activity = Array.isArray(data.activity) ? data.activity : [];
+          document.getElementById('activityList').innerHTML = activity.slice(0, 15).map(event => `<div class="activity-item"><strong>${esc(String(event.type || '').replaceAll('_',' '))}</strong><span>${formatDate(event.createdAt)}</span></div>`).join('') || '<p class="muted">No activity yet.</p>';
+
+          const transactions = Array.isArray(data.transactions) ? data.transactions : [];
+          document.getElementById('transactionList').innerHTML = transactions.slice(0, 30).map(transaction => {
+            const status = String(transaction.status || 'pending').toLowerCase();
+            return `<div class="activity-item" data-transaction-id="${esc(transaction.id)}"><strong>$${Number(transaction.amount || 0).toFixed(2)} · ${Number(transaction.sodaCount || 0)} soda${Number(transaction.sodaCount) === 1 ? '' : 's'}</strong><span><span class="status-badge status-${esc(status)}">${esc(status)}</span> · ${formatDate(transaction.createdAt)}</span></div>`;
+          }).join('') || '<p class="muted">No support activity yet.</p>';
+
+          renderMessages();
+        } catch (error) {
+          if (String(error.message || '').toLowerCase().includes('authentication')) {
+            UserSession.logout();
+            window.location.href = 'login.html';
             return;
           }
-
-          messageList.innerHTML = messages.slice(0, 30).map(message => `
-            <article class="message-card ${message.isRead ? '' : 'unread'}" data-message-id="${esc(message.id)}">
-              <div class="message-head">
-                <div>
-                  <strong>${esc(message.supporterName || 'Anonymous supporter')}</strong>
-                  <div class="message-meta">${message.supporterEmail ? esc(message.supporterEmail) : 'No email provided'} · ${new Date(message.createdAt).toLocaleString()}</div>
-                </div>
-                ${message.isRead ? '' : '<span class="badge">Unread</span>'}
-              </div>
-              <div class="message-body">${esc(message.message)}</div>
-              <div class="message-meta">Linked support: ${message.transactionId ? 'Yes' : 'No'}</div>
-              ${message.isRead ? '' : '<div class="message-actions"><button class="read-btn" data-read-id="' + esc(message.id) + '">Mark as read</button></div>'}
-            </article>
-          `).join('');
-
-          messageList.querySelectorAll('[data-read-id]').forEach(button => {
-            button.addEventListener('click', async () => {
-              button.disabled = true;
-              try {
-                const result = await fetch('/api/creator/messages/' + encodeURIComponent(button.dataset.readId) + '/read', {
-                  method: 'POST',
-                  credentials: 'same-origin'
-                });
-                if (!result.ok) throw new Error('Could not mark message as read');
-                await loadMessages();
-                const counter = document.getElementById('messagesCount');
-                if (counter) {
-                  const unread = messages.filter(m => !m.isRead).length - 1;
-                  counter.textContent = Math.max(0, unread);
-                }
-              } catch (error) {
-                button.disabled = false;
-                showMessage(error.message, 'error');
-              }
-            });
-          });
-        } catch (error) {
-          messageList.innerHTML = `<p class="muted">${esc(error.message || 'Could not load messages')}</p>`;
+          showMessage(error.message || 'Could not load dashboard', 'error');
         }
       }
 
-      loadMessages();
+      async function markAllRead() {
+        const unread = latestMessages.filter(message => !message.isRead);
+        if (!unread.length) return showMessage('You have no unread messages.', 'info');
+        const button = document.getElementById('markAllRead');
+        button.disabled = true;
+        try {
+          const results = await Promise.all(unread.map(message => API.request('/api/creator/messages/' + encodeURIComponent(message.id) + '/read', { method:'POST' }).then(() => message.id)));
+          const ids = new Set(results);
+          latestMessages = latestMessages.map(message => ids.has(message.id) ? { ...message, isRead:true } : message);
+          renderMessages();
+          showMessage(`${results.length} message${results.length === 1 ? '' : 's'} marked as read.`, 'success');
+        } catch (error) {
+          showMessage(error.message || 'Could not mark all messages as read', 'error');
+        } finally {
+          button.disabled = false;
+        }
+      }
+
+      document.getElementById('dashboardRefresh')?.addEventListener('click', loadDashboard);
+      document.getElementById('activityRefresh')?.addEventListener('click', loadDashboard);
+      document.getElementById('transactionRefresh')?.addEventListener('click', loadDashboard);
+      document.getElementById('markAllRead')?.addEventListener('click', markAllRead);
+      messageSearch?.addEventListener('input', renderMessages);
+
+      loadDashboard();
     });
   </script>
 </body>
