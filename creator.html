@@ -5,11 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="pageTitle">Buy Me a Soda 🥤</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+      .support-modal{position:fixed;inset:0;background:rgba(15,23,42,.62);display:none;align-items:center;justify-content:center;padding:20px;z-index:10000}
+      .support-modal.open{display:flex}
+      .support-box{width:min(460px,100%);background:#fff;border-radius:20px;padding:26px;box-shadow:0 25px 70px rgba(0,0,0,.25)}
+      .support-box h2{margin:0 0 8px}.support-box p{margin:0 0 20px;color:#64748b}
+      .support-box label{display:block;font-weight:600;margin:12px 0 6px}.support-box input,.support-box textarea{width:100%;box-sizing:border-box;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}.support-box textarea{min-height:100px;resize:vertical}
+      .support-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}.support-actions button{border:0;border-radius:10px;padding:11px 16px;cursor:pointer;font-weight:700}.support-cancel{background:#e2e8f0}.support-pay{background:#2563eb;color:#fff}
+    </style>
 </head>
 <body>
     <div class="main-container">
         <div class="creator-card">
-            <!-- Profile Section -->
             <div class="profile-section">
                 <div class="profile-header">
                     <img id="profileImage" src="https://ui-avatars.com/api/?name=Default&background=random&rounded=true" alt="Profile" class="profile-image">
@@ -20,31 +27,20 @@
                 </div>
             </div>
 
-            <!-- QR Code Section -->
             <div class="qr-section">
-                <div class="qr-code-container">
-                    <div id="qrcode"></div>
-                </div>
+                <div class="qr-code-container"><div id="qrcode"></div></div>
                 <p class="qr-text">Scan to support!</p>
             </div>
 
-            <!-- Support Buttons -->
             <div class="support-section">
                 <h2 class="support-title">Buy Me Sodas 🥤</h2>
                 <div class="soda-buttons">
-                    <button class="soda-btn" data-sodas="1">
-                        🥤 Buy 1 Soda - $1
-                    </button>
-                    <button class="soda-btn" data-sodas="3">
-                        🥤 Buy 3 Sodas - $3
-                    </button>
-                    <button class="soda-btn" data-sodas="5">
-                        🥤 Buy 5 Sodas - $5
-                    </button>
+                    <button class="soda-btn" data-sodas="1">🥤 Buy 1 Soda - $1</button>
+                    <button class="soda-btn" data-sodas="3">🥤 Buy 3 Sodas - $3</button>
+                    <button class="soda-btn" data-sodas="5">🥤 Buy 5 Sodas - $5</button>
                 </div>
             </div>
 
-            <!-- Share Section -->
             <div class="share-section">
                 <h3>Share this page:</h3>
                 <div class="share-buttons">
@@ -55,7 +51,26 @@
         </div>
     </div>
 
+    <div id="supportModal" class="support-modal" aria-hidden="true">
+      <div class="support-box" role="dialog" aria-modal="true" aria-labelledby="supportTitle">
+        <h2 id="supportTitle">Support this creator 🥤</h2>
+        <p id="supportAmount">You are supporting with $1.</p>
+        <form id="supportForm">
+          <label for="supporterName">Name (optional)</label>
+          <input id="supporterName" name="supporterName" maxlength="100" placeholder="Your name">
+          <label for="supporterEmail">Email (optional)</label>
+          <input id="supporterEmail" name="supporterEmail" type="email" maxlength="160" placeholder="you@example.com">
+          <label for="supporterMessage">Message (optional)</label>
+          <textarea id="supporterMessage" name="message" maxlength="500" placeholder="Leave a note for the creator..."></textarea>
+          <div class="support-actions">
+            <button type="button" class="support-cancel" id="supportCancel">Cancel</button>
+            <button type="submit" class="support-pay" id="supportPay">Continue to PayPal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-        <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
