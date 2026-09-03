@@ -97,6 +97,29 @@ function genericResetResponse(res) { return res.json({ ok: true, message: 'If th
 app.get('/api/test', (_req, res) => res.json({ message: 'Server is working!' }));
 app.get('/api/me', requireCreator, (req, res) => res.json(sanitizeUser(req.creator)));
 
+app.get('/api/creators', async (req, res) => {
+  try {
+    const q = String(req.query.q || '').trim().toLowerCase();
+    const users = await prisma.user.findMany({
+      where: { isSuspended: false },
+      select: { name: true, username: true, bio: true, profilePicture: true },
+      orderBy: { createdAt: 'desc' },
+      take: 200
+    });
+    const creators = users.filter(user => {
+      if (!q) return true;
+      const name = String(user.name || '').toLowerCase();
+      const username = String(user.username || '').toLowerCase();
+      const bio = String(user.bio || '').toLowerCase();
+      return name.includes(q) || username.includes(q) || bio.includes(q);
+    }).slice(0, 24);
+    res.json({ creators });
+  } catch (error) {
+    console.error('Creator discovery error:', error.message);
+    res.status(500).json({ error: 'Could not load creators' });
+  }
+});
+
 app.post('/api/register', upload.single('profilePicture'), async (req, res) => {
   try {
     const { name, email, username, password, paypalMe, bio = '' } = req.body;
@@ -319,7 +342,7 @@ app.get('/api/admin/stats', requireAdmin, async (_req, res) => {
       prisma.user.findMany({ orderBy: { createdAt: 'desc' }, take: 20, select: { id: true, name: true, email: true, username: true, createdAt: true, isSuspended: true } }),
       prisma.event.findMany({ orderBy: { createdAt: 'desc' }, take: 20 }),
       prisma.transaction.findMany({ orderBy: { createdAt: 'desc' }, take: 100, include: { creator: { select: { username: true, name: true } } } }),
-      prisma.withdrawal.findMany({ orderBy: { createdAt: 'desc' }, take: 50, include: { creator: { select: { username: true, name: true } } } })
+      prisma.withdrawal.findMany({ orderBy: { createdAt: 'desc' }, take: 50, include: { creator: { select: { username: true, name: true } } })
     ]);
     const completedAmount = transactions.filter(t => t.status === 'completed').reduce((sum, t) => sum + t.netAmount, 0);
     const pendingAmount = transactions.filter(t => t.status === 'pending').reduce((sum, t) => sum + t.amount, 0);
@@ -368,7 +391,7 @@ app.post('/api/admin/users/:id/unsuspend', requireAdmin, async (req, res) => {
 });
 
 app.get('/:username', async (req, res, next) => {
-  const reserved = new Set(['api', 'uploads', 'admin.html', 'creator.html', 'creator-dashboard.html', 'login.html', 'signup.html', 'forgot-password.html', 'reset-password.html', 'contact.html', 'how-it-works.html', 'privacy.html', 'terms.html', 'thank-you.html', 'qr.html']);
+  const reserved = new Set(['api', 'uploads', 'admin.html', 'creator.html', 'creator-dashboard.html', 'login.html', 'signup.html', 'forgot-password.html', 'reset-password.html', 'contact.html', 'how-it-works.html', 'privacy.html', 'terms.html', 'thank-you.html', 'qr.html', 'discover.html']);
   if (reserved.has(req.params.username)) return next();
   res.sendFile(path.join(__dirname, 'creator.html'));
 });
