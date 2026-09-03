@@ -27,6 +27,16 @@
     .activity-item:last-child { border-bottom:0; }
     .activity-item span { color:#64748b; font-size:.85rem; text-align:right; }
     .full-width { grid-column:1 / -1; }
+    .message-card { border:1px solid #e2e8f0; border-radius:14px; padding:16px; margin:12px 0; background:#f8fafc; }
+    .message-card.unread { border-color:#f59e0b; background:#fffbeb; }
+    .message-head { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
+    .message-head strong { color:#0f172a; }
+    .message-meta { color:#64748b; font-size:.83rem; margin-top:4px; }
+    .message-body { margin:12px 0; color:#334155; line-height:1.5; white-space:pre-wrap; }
+    .message-actions { display:flex; justify-content:flex-end; }
+    .read-btn { border:1px solid #cbd5e1; background:#fff; border-radius:10px; padding:8px 12px; cursor:pointer; font-weight:600; }
+    .read-btn:hover { background:#f1f5f9; }
+    .badge { display:inline-block; padding:4px 8px; border-radius:999px; font-size:.75rem; font-weight:700; background:#f59e0b; color:#fff; }
     @media(max-width:800px){ .layout{grid-template-columns:1fr;} .full-width{grid-column:auto;} .dashboard-top{align-items:flex-start; flex-direction:column;} }
   </style>
 </head>
@@ -71,6 +81,12 @@
       </div>
 
       <div class="panel full-width">
+        <h3>Messages from Supporters</h3>
+        <p class="muted">Messages sent with support attempts appear here. Unread messages are highlighted.</p>
+        <div id="messageList"><p class="muted">Loading messages...</p></div>
+      </div>
+
+      <div class="panel full-width">
         <h3>Support Activity</h3>
         <p class="muted">Support attempts appear here as pending until a payment provider confirms the payment.</p>
         <div id="transactionList"><p class="muted">Loading...</p></div>
@@ -83,6 +99,66 @@
       const user = UserSession.getCurrentUser();
       const link = document.getElementById('publicProfileLink');
       if (user && link) link.href = `/${user.username}`;
+
+      const messageList = document.getElementById('messageList');
+      if (!messageList || !user) return;
+
+      const esc = (value) => String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+
+      async function loadMessages() {
+        try {
+          const response = await fetch('/api/creator-dashboard', { credentials: 'same-origin' });
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error || 'Could not load messages');
+          const messages = data.messages || [];
+
+          if (!messages.length) {
+            messageList.innerHTML = '<p class="muted">No supporter messages yet.</p>';
+            return;
+          }
+
+          messageList.innerHTML = messages.slice(0, 30).map(message => `
+            <article class="message-card ${message.isRead ? '' : 'unread'}" data-message-id="${esc(message.id)}">
+              <div class="message-head">
+                <div>
+                  <strong>${esc(message.supporterName || 'Anonymous supporter')}</strong>
+                  <div class="message-meta">${message.supporterEmail ? esc(message.supporterEmail) : 'No email provided'} · ${new Date(message.createdAt).toLocaleString()}</div>
+                </div>
+                ${message.isRead ? '' : '<span class="badge">Unread</span>'}
+              </div>
+              <div class="message-body">${esc(message.message)}</div>
+              <div class="message-meta">Linked support: ${message.transactionId ? 'Yes' : 'No'}</div>
+              ${message.isRead ? '' : '<div class="message-actions"><button class="read-btn" data-read-id="' + esc(message.id) + '">Mark as read</button></div>'}
+            </article>
+          `).join('');
+
+          messageList.querySelectorAll('[data-read-id]').forEach(button => {
+            button.addEventListener('click', async () => {
+              button.disabled = true;
+              try {
+                const result = await fetch('/api/creator/messages/' + encodeURIComponent(button.dataset.readId) + '/read', {
+                  method: 'POST',
+                  credentials: 'same-origin'
+                });
+                if (!result.ok) throw new Error('Could not mark message as read');
+                await loadMessages();
+                const counter = document.getElementById('messagesCount');
+                if (counter) {
+                  const unread = messages.filter(m => !m.isRead).length - 1;
+                  counter.textContent = Math.max(0, unread);
+                }
+              } catch (error) {
+                button.disabled = false;
+                showMessage(error.message, 'error');
+              }
+            });
+          });
+        } catch (error) {
+          messageList.innerHTML = `<p class="muted">${esc(error.message || 'Could not load messages')}</p>`;
+        }
+      }
+
+      loadMessages();
     });
   </script>
 </body>
