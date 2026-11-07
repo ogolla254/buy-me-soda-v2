@@ -1897,3 +1897,22 @@ html {
 section {
     scroll-margin-top: 80px;
 }
+
+
+/* Homepage hero contrast refinement */
+.hero-headline {
+    color: #ffffff;
+    text-shadow: 0 3px 18px rgba(0, 0, 0, 0.28);
+}
+
+.hero-subtitle {
+    color: #e2e8f0;
+}
+
+body.dark-mode .hero-headline {
+    color: #ffffff;
+}
+
+body.dark-mode .hero-subtitle {
+    color: #e2e8f0;
+}
